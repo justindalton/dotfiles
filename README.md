@@ -1,57 +1,37 @@
-# Ryan Bates Dot Files
+# Portable OpenCode configuration
 
-These are config files to set up Mac OS X command line the way I like it using [Zsh](https://www.zsh.org).
+This repository contains the portable, opencode-focused configuration used to
+coordinate plans and delegate implementation and verification work. It is
+public: never add credentials, authentication state, private configuration, or
+machine-specific paths.
 
-For an older version that uses [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh), check out [this branch](https://github.com/ryanb/dotfiles/tree/oh-my-zsh).
+## Prerequisites and installation
 
-
-## Installation
-
-Run the `bin/install` command to copy files over. It will prompt you before replacing if the files already exist.
-
-```sh
-git clone git@github.com/ryanb/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-./bin/install
-```
-
-After installing, open a new terminal window to see the effects.
-
-Feel free to customize the .zshrc file to match your preference.
-
-
-## Features
-
-I normally place all of my coding projects in ~/code, so this directory can easily be accessed (and tab completed) with the "c" command.
+Install Bash, Git, Node.js/npm, and opencode. The Playwright MCP wrapper also
+requires `shasum` and `cut`. Clone this repository, then run:
 
 ```sh
-c railsca<tab>
+git clone https://github.com/justindalton/dotfiles.git ~/code/dotfiles
+cd ~/code/dotfiles
+./bin/install-opencode
 ```
 
-There is also an "h" command which behaves similar, but acts on the home path.
+The installer creates `$HOME/.config/opencode` and links these tracked items
+individually: `opencode.json`, `tui.jsonc`, `herdr-tui-session.js`, `agent/`,
+`command/`, `plugins/`, and `bin/`. Existing generated runtime files such as
+`node_modules` and `figwright-plugin` are left alone.
 
-```sh
-h doc<tab>
-```
+The installer is idempotent, but refuses to replace any existing non-matching
+file, directory, or symlink. Resolve conflicts manually and run it again.
 
-If you're using git, you'll notice the current branch name shows up in the prompt while in a git repository.
+Provider and MCP authentication happens locally through opencode and the
+relevant providers. Authentication state is never copied or committed. Supply
+secrets through the providers' local environment variables or login flows;
+never put secret values in this repository.
 
+## Validation and updates
 
-## Uninstall
-
-To remove the dotfile configs, run the following commands. Be certain to double check the contents of the files before removing so you don't lose custom settings.
-
-```
-unlink ~/.bin
-unlink ~/.gitignore
-unlink ~/.gitconfig
-unlink ~/.gemrc
-unlink ~/.gvimrc
-unlink ~/.irbrc
-unlink ~/.vim
-unlink ~/.vimrc
-rm ~/.zshrc # careful here
-rm -rf ~/.dotfiles
-```
-
-Then open a new terminal window to see the effects.
+After changing configuration, validate JSON and shell syntax, inspect the diff,
+and run the installer in an isolated temporary `HOME`. Pull updates, rerun the
+installer, and restart opencode after configuration or plugin changes so the
+new links and settings are loaded.

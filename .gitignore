@@ -1,2 +1,53 @@
-vim/.netrwhist
-vim/.VimballRecord
+# Scratch, editor, and operating-system files
+.tmp/
+.*.swp
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Generated dependencies and package metadata under the installed config
+opencode/node_modules/
+opencode/package.json
+opencode/package-lock.json
+opencode/bun.lock
+opencode/yarn.lock
+
+# Downloaded plugins and runtime state
+opencode/figwright-plugin/
+opencode/.cache/
+opencode/.state/
+
+# Environment files, credentials, and authentication state
+.env
+.env.*
+!.env.example
+opencode/.env
+opencode/.env.*
+opencode/auth.json
+opencode/credentials.json
+opencode/**/auth/
+opencode/**/credentials/
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Caches and browser profiles
+.cache/
+cache/
+browser-profile/
+browser-profiles/
+playwright-profile/
+opencode-playwright-mcp/
+
+# Common secret files
+.secrets/
+secrets/
+*.secret
+*.secrets
+*.token

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(CDPATH= cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+repo_root="$(CDPATH= cd -- "$script_dir/.." && pwd -P)"
+destination="$HOME/.config/opencode"
+
+if [[ -L "$destination" || ( -e "$destination" && ! -d "$destination" ) ]]; then
+  printf 'installer error: refusing to use conflicting destination: %s\n' "$destination" >&2
+  exit 1
+fi
+
+mkdir -p "$destination"
+
+items=(
+  opencode.json
+  tui.jsonc
+  herdr-tui-session.js
+  agent
+  command
+  plugins
+  bin
+)
+
+for item in "${items[@]}"; do
+  source="$repo_root/opencode/$item"
+  target="$destination/$item"
+
+  if [[ ! -e "$source" && ! -L "$source" ]]; then
+    printf 'installer error: missing source: %s\n' "$source" >&2
+    exit 1
+  fi
+
+  if [[ -L "$target" ]]; then
+    current_target="$(readlink "$target")"
+    if [[ "$current_target" == "$source" ]]; then
+      continue
+    fi
+    printf 'installer error: refusing to replace conflicting symlink: %s\n' "$target" >&2
+    exit 1
+  fi
+
+  if [[ -e "$target" ]]; then
+    printf 'installer error: refusing to replace existing path: %s\n' "$target" >&2
+    exit 1
+  fi
+done
+
+for item in "${items[@]}"; do
+  source="$repo_root/opencode/$item"
+  target="$destination/$item"
+  if [[ -e "$target" || -L "$target" ]]; then
+    continue
+  fi
+  ln -s "$source" "$target"
+done
+
+printf 'Linked opencode configuration into %s\n' "$destination"

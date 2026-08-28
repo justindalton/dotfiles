@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Launch @playwright/mcp with a browser profile scoped to the current git worktree.
+#
+# Why: a Chrome/Chromium persistent profile is single-writer. Two MCP servers
+# sharing one --user-data-dir conflict, which is the failure mode that makes
+# @browsermcp/mcp usable from only one opencode session at a time. Keying the
+# profile off the worktree root lets every worktree drive its own browser
+# concurrently while still persisting logins between runs.
+set -euo pipefail
+
+PLAYWRIGHT_MCP_VERSION="${PLAYWRIGHT_MCP_VERSION:-0.0.78}"
+PROFILE_ROOT="${PLAYWRIGHT_MCP_PROFILE_ROOT:-$HOME/.cache/opencode-playwright-mcp}"
+
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+# Two worktrees can share a basename, so disambiguate with a hash of the full
+# path while keeping the basename for human-readable debugging.
+slug="$(basename "$root")"
+digest="$(printf '%s' "$root" | shasum -a 256 | cut -c1-8)"
+profile="$PROFILE_ROOT/$slug-$digest"
+
+mkdir -p "$profile"
+
+if [[ -n "${PLAYWRIGHT_MCP_WRAPPER_DEBUG:-}" ]]; then
+  printf 'playwright-mcp-worktree: root=%s profile=%s\n' "$root" "$profile" >&2
+fi
+
+exec npx -y "@playwright/mcp@${PLAYWRIGHT_MCP_VERSION}" \
+  --browser chrome \
+  --user-data-dir "$profile" \
+  "$@"
