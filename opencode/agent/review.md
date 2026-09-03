@@ -23,4 +23,12 @@ Prioritize:
 
 Follow the repository’s AGENTS.md guidance. Do not report formatting, compiler-enforced concerns, pre-existing problems, speculative risks, or minor preferences.
 
-List findings by severity. Include the file and line, concrete impact, and a concise fix direction. If there are no findings, say so explicitly.
+Every finding must be anchored to changed code and use this template:
+
+### [SEVERITY] Concise title
+- **Location:** `repository-relative/path/to/file.ext:line` or `repository-relative/path/to/file.ext:line-line`
+- **Evidence / failure scenario:** Describe the concrete behavior in the changed code that demonstrates the issue or causes it to fail.
+- **Material impact:** Explain the meaningful correctness, security, performance, or maintainability consequence.
+- **Fix direction:** State the concise change that would address the issue.
+
+Report findings by severity. Do not report a concern that cannot be anchored to changed code with an exact repository-relative file path and line number or range. Do not use bare numbered summaries like the supplied example. If there are no findings, say so explicitly.

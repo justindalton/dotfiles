@@ -8,6 +8,11 @@
   "permission": {
     "external_directory": {
       "*": "ask",
+      "~/.agents/**": "allow",
+      "/var/folders/**/T/opencode/**": "allow",
+      "/private/var/folders/**/T/opencode/**": "allow",
+      "/tmp/opencode/**": "allow",
+      "/private/tmp/opencode/**": "allow",
       "~/.npm/_npx/**": "allow",
       "~/.config/opencode/**": "allow"
     }
