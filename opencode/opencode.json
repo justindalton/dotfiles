@@ -8,7 +8,8 @@
   "permission": {
     "external_directory": {
       "*": "ask",
-      "~/.npm/_npx/**": "allow"
+      "~/.npm/_npx/**": "allow",
+      "~/.config/opencode/**": "allow"
     }
   },
   "agent": {
