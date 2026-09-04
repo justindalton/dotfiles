@@ -39,11 +39,10 @@ full-tool session, launch opencode with the overlay that re-enables its MCPs:
 OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
 ```
 
-The Sol agents remain available for review and architecture escalation. The
-architect is read-only and is reserved for material ambiguity, cross-module or
-high-risk decisions, rule conflicts, and repeated Luna failures. Restart
-opencode after configuration or plugin changes so updated links and settings
-are loaded.
+The Sol agents remain available for review and architecture decisions. The
+read-only architect is used proactively and mandatorily for design, structural,
+and tradeoff decisions before implementation. Restart opencode after
+configuration or plugin changes so updated links and settings are loaded.
 
 The installer is idempotent, but refuses to replace any existing non-matching
 file, directory, or symlink. Resolve conflicts manually and run it again.
