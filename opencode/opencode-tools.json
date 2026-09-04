@@ -9,6 +9,12 @@
     },
     "figwright": {
       "enabled": true
+    },
+    "datadog": {
+      "enabled": true
+    },
+    "posthog": {
+      "enabled": true
     }
   }
 }

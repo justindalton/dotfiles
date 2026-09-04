@@ -22,7 +22,17 @@
       "/tmp/opencode/**": "allow",
       "/private/tmp/opencode/**": "allow",
       "~/.npm/_npx/**": "allow",
+      "~/code/**": "allow",
       "~/.config/opencode/**": "allow"
+    },
+    "bash": {
+      "pup *": "ask",
+      "/opt/homebrew/bin/pup *": "ask",
+      "posthog-cli *": "ask",
+      "pup --no-agent auth status*": "allow",
+      "/opt/homebrew/bin/pup --no-agent auth status*": "allow",
+      "pup --no-agent --read-only *": "allow",
+      "/opt/homebrew/bin/pup --no-agent --read-only *": "allow"
     }
   },
   "agent": {
@@ -81,7 +91,17 @@
       ],
       "enabled": false,
       "timeout": 120000
+    },
+    "datadog": {
+      "type": "remote",
+      "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core%2Cprofiling",
+      "enabled": false
+    },
+    "posthog": {
+      "type": "remote",
+      "url": "https://mcp.posthog.com/mcp?readonly=true",
+      "enabled": false
     }
   },
-  "plugin": ["@ramtinj95/opencode-tokenscope"]
+  "plugin": ["@ramtinj95/opencode-tokenscope", "@datadog/opencode-plugin"]
 }
