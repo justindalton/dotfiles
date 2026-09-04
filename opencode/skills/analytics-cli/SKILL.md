@@ -6,16 +6,15 @@ description: Use for Datadog, Pup, PostHog, analytics, observability, metrics, l
 # Analytics CLI
 
 Use this skill for Datadog and PostHog analytics or observability investigations.
-The Datadog Pup CLI is installed at `/opt/homebrew/bin/pup` (and is available as
-`pup`); the PostHog CLI is installed as `posthog-cli`. Both are installed and
-authenticated in this environment.
+Use the Datadog Pup CLI as `pup` and the PostHog CLI as `posthog-cli` when they
+are available in the environment.
 
 ## Datadog Pup
 
-- Use `/opt/homebrew/bin/pup` or `pup` directly in non-agent, read-only mode by
-  default: `pup --no-agent --read-only ...`.
-- `pup --no-agent auth status` (or the absolute-path equivalent) is a safe
-  authentication-status command and may be run without additional approval.
+- Use `pup` directly in non-agent, read-only mode by default:
+  `pup --no-agent --read-only ...`.
+- `pup --no-agent auth status` is a safe authentication-status command and may
+  be run without additional approval.
 - Never use or permit a Pup command that lacks `--no-agent`.
 - Treat any command that could mutate or destroy data as requiring explicit
   user approval before execution, even if it appears related to an
