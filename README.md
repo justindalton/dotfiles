@@ -17,9 +17,25 @@ cd ~/code/dotfiles
 ```
 
 The installer creates `$HOME/.config/opencode` and links these tracked items
-individually: `opencode.json`, `tui.jsonc`, `herdr-tui-session.js`, `agent/`,
-`command/`, `plugins/`, and `bin/`. Existing generated runtime files such as
-`node_modules` and `figwright-plugin` are left alone.
+individually: `opencode.json`, `opencode-tools.json`, `tui.jsonc`,
+`herdr-tui-session.js`, `agent/`, `command/`, `plugins/`, and `bin/`. Existing
+generated runtime files such as `node_modules` and `figwright-plugin` are left
+alone.
+
+The tracked default profile is lean: heavyweight Playwright, Linear, and
+Figwright MCPs are disabled, while browsermcp and Figma remain disabled. For a
+full-tool session, launch opencode with the overlay that re-enables only those
+three MCPs:
+
+```sh
+OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
+```
+
+The Sol agents remain available for review and architecture escalation. The
+architect is read-only and is reserved for material ambiguity, cross-module or
+high-risk decisions, rule conflicts, and repeated Luna failures. Restart
+opencode after configuration or plugin changes so updated links and settings
+are loaded.
 
 The installer is idempotent, but refuses to replace any existing non-matching
 file, directory, or symlink. Resolve conflicts manually and run it again.

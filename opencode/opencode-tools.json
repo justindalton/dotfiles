@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "playwright": {
+      "enabled": true
+    },
+    "linear": {
+      "enabled": true
+    },
+    "figwright": {
+      "enabled": true
+    }
+  }
+}
