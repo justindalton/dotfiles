@@ -35,5 +35,6 @@ Every finding must be anchored to changed code and use this template:
 Report findings by severity. Do not report a concern that cannot be anchored to changed code with an exact repository-relative file path and line number or range. Do not use bare numbered summaries like the supplied example. If there are no findings, say so explicitly.
 
 Keep the review concise and focused on actionable findings; do not repeat the
-plan or include code excerpts. Preserve the finding template and evidence
-requirements above.
+plan or include code excerpts. Keep non-finding prose to a few lines, and do not
+add narrative padding or summarize findings a second time after listing them.
+Preserve the finding template and evidence requirements above.

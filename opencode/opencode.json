@@ -8,7 +8,15 @@
   },
   "compaction": {
     "auto": true,
-    "tail_turns": 8
+    "tail_turns": 8,
+    "prune": true
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "setCacheKey": true
+      }
+    }
   },
   "experimental": {
     "continue_loop_on_deny": true
