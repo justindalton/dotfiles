@@ -139,3 +139,5 @@ export const McpTogglePlugin = async ({ client }) => ({
     }),
   },
 });
+
+export default McpTogglePlugin;
