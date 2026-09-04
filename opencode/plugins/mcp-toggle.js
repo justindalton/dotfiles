@@ -1,5 +1,3 @@
-import { tool } from "@opencode-ai/plugin/tool";
-
 function responseData(response) {
   return response && typeof response === "object" && "data" in response
     ? response.data
@@ -54,11 +52,15 @@ function errorMessage(error) {
 
 export const McpTogglePlugin = async ({ client }) => ({
   tool: {
-    mcp_enable: tool({
+    mcp_enable: {
       description:
         "Enable a configured MCP server for this running OpenCode instance without changing config files.",
       args: {
-        name: tool.schema.string().min(1).describe("Configured MCP server name"),
+        name: {
+          type: "string",
+          minLength: 1,
+          description: "Configured MCP server name",
+        },
       },
       async execute({ name }) {
         if (!validName(name)) return "MCP server name is required.";
@@ -80,13 +82,17 @@ export const McpTogglePlugin = async ({ client }) => ({
           return `Could not enable MCP server ${name}: ${errorMessage(error)}`;
         }
       },
-    }),
+    },
 
-    mcp_disable: tool({
+    mcp_disable: {
       description:
         "Disconnect a configured MCP server for this running OpenCode instance without deleting its config.",
       args: {
-        name: tool.schema.string().min(1).describe("Configured MCP server name"),
+        name: {
+          type: "string",
+          minLength: 1,
+          description: "Configured MCP server name",
+        },
       },
       async execute({ name }) {
         if (!validName(name)) return "MCP server name is required.";
@@ -105,9 +111,9 @@ export const McpTogglePlugin = async ({ client }) => ({
           return `Could not disable MCP server ${name}: ${errorMessage(error)}`;
         }
       },
-    }),
+    },
 
-    mcp_list: tool({
+    mcp_list: {
       description: "List configured MCP servers and their current live connection state.",
       args: {},
       async execute() {
@@ -136,7 +142,7 @@ export const McpTogglePlugin = async ({ client }) => ({
           return `Could not list MCP servers: ${errorMessage(error)}`;
         }
       },
-    }),
+    },
   },
 });
 
