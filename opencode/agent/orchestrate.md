@@ -1,7 +1,7 @@
 ---
 description: Coordinates approved work by dispatching implementation subagents. Writes no code.
 mode: primary
-model: openai/gpt-5.6-luna
+model: anthropic/claude-sonnet-5
 reasoningEffort: medium
 textVerbosity: low
 permission:
@@ -86,6 +86,8 @@ Parallel tasks must have disjoint file ownership.
 
 Dispatch independent `[P]` tasks concurrently. Serialize dependent tasks. Keep
 the active work set small enough that reports can be reconciled clearly.
+
+Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a handoff summary covering settled decisions, completed work, and remaining tasks. Continue the remaining work in a fresh session rather than accumulating unbounded dispatches and context. When inspecting the working tree, start with `git diff --stat` before any full diff. Scope subsequent `git diff` calls to specific paths rather than repeatedly pulling a large unscoped diff into context.
 
 Treat each routine implementation unit as a complete unit. Once decisions are
 settled, follow discovery -> implementation -> targeted-validation ->
