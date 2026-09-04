@@ -22,10 +22,10 @@ individually: `opencode.json`, `opencode-tools.json`, `tui.jsonc`,
 generated runtime files such as `node_modules` and `figwright-plugin` are left
 alone.
 
-The tracked default profile is lean: heavyweight Playwright, Linear, and
-Figwright MCPs are disabled, while browsermcp and Figma remain disabled. For a
-full-tool session, launch opencode with the overlay that re-enables only those
-three MCPs:
+The tracked default profile is lean: heavyweight Playwright, Linear, Datadog,
+PostHog, and Figwright MCPs are disabled, while browsermcp and Figma remain
+disabled. For a full-tool session, launch opencode with the overlay that
+re-enables those five MCPs:
 
 ```sh
 OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
