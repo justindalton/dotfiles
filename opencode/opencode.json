@@ -107,5 +107,5 @@
       "enabled": false
     }
   },
-  "plugin": ["@ramtinj95/opencode-tokenscope", "@datadog/opencode-plugin"]
+  "plugin": ["@ramtinj95/opencode-tokenscope", "@datadog/opencode-plugin", "./plugins/mcp-toggle.js"]
 }
