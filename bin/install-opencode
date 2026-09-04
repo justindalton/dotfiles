@@ -20,6 +20,7 @@ items=(
   agent
   command
   plugins
+  skills
   bin
 )
 
