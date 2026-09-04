@@ -73,12 +73,13 @@ the active work set small enough that reports can be reconciled clearly.
 
 Treat each routine implementation unit as a complete discovery -> implementation
 -> targeted-validation -> concise-reporting unit. Prefer one implementation wave
-and one final checkpoint for ordinary work. Do not dispatch `verify` routinely or
-perform repeated intermediate inspection. Dispatch `verify` only when
-implementation contradicts the brief, reports blockers or uncertainty, or the
-accumulated work is large, cross-module, or high-risk; batch verification at a
-checkpoint. If verification fails, dispatch `implement` again with the failure
-report and a narrowly scoped fix. Do not edit the fix yourself.
+and one final checkpoint for ordinary work. Dispatch `verify` exclusively when
+the implementation report states a blocker or uncertainty, contradicts the brief,
+or the accumulated diff is cross-module or high-risk. Never dispatch `verify`
+after a worker completed targeted validation cleanly. Do not perform repeated
+intermediate inspection. Batch verification at a checkpoint. If verification
+fails, dispatch `implement` again with the failure report and a narrowly scoped
+fix. Do not edit the fix yourself.
 
 Implementation and verification must not run manual repo-wide typecheck,
 formatting, or lint; pre-commit owns those checks. Targeted behavior tests and
