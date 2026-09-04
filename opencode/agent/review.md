@@ -2,6 +2,7 @@
 description: Reviews code for correctness, security, performance, and maintainability.
 mode: subagent
 model: openai/gpt-5.6-sol
+textVerbosity: low
 permission:
   edit: deny
   write: deny
@@ -32,3 +33,7 @@ Every finding must be anchored to changed code and use this template:
 - **Fix direction:** State the concise change that would address the issue.
 
 Report findings by severity. Do not report a concern that cannot be anchored to changed code with an exact repository-relative file path and line number or range. Do not use bare numbered summaries like the supplied example. If there are no findings, say so explicitly.
+
+Keep the review concise and focused on actionable findings; do not repeat the
+plan or include code excerpts. Preserve the finding template and evidence
+requirements above.
