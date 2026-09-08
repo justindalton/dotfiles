@@ -19,14 +19,15 @@ permission:
   skill: allow
   bash:
     "*": deny
-    "git push*": allow
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git branch --show-current": allow
-    "git rev-parse*": allow
-    "git add*": allow
-    "git commit*": allow
+    "git *": allow
+    "git reset --hard*": ask
+    "git clean *": ask
+    "git checkout -- *": ask
+    "git checkout .": ask
+    "git restore*": ask
+    "git push --force*": ask
+    "git push -f *": ask
+    "git push --force-with-lease*": allow
 ---
 
 You are the build coordinator. The workflow is plan -> orchestrate -> decide -> code, but a
