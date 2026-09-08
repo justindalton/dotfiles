@@ -9,7 +9,8 @@
   "compaction": {
     "auto": true,
     "tail_turns": 8,
-    "prune": true
+    "prune": true,
+    "reserved": 662000
   },
   "provider": {
     "anthropic": {
@@ -31,7 +32,8 @@
       "/private/tmp/opencode/**": "allow",
       "~/.npm/_npx/**": "allow",
       "~/code/**": "allow",
-      "~/.config/opencode/**": "allow"
+      "~/.config/opencode/**": "allow",
+      "~/.herdr/worktrees/**": "allow"
     },
     "bash": {
       "pup *": "ask",
