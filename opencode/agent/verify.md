@@ -2,6 +2,7 @@
 description: Independently verifies implementation work against the approved plan.
 mode: subagent
 model: openai/gpt-5.6-luna
+color: "#4D7C0F"
 permission:
   edit: deny
   write: deny

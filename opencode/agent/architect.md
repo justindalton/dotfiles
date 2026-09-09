@@ -2,6 +2,7 @@
 description: Gives read-only recommendations for any design, structural, or tradeoff decision before implementation.
 mode: subagent
 model: openai/gpt-5.6-sol
+color: "#7C3AED"
 textVerbosity: low
 permission:
   edit: deny

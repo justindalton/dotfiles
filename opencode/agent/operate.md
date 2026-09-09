@@ -2,6 +2,7 @@
 description: Read-only dev-stack/process/health probe for orchestrate. Digests raw ops output into short verdicts.
 mode: subagent
 model: openai/gpt-5.6-luna
+color: "#0E7490"
 textVerbosity: low
 permission:
   edit: deny
