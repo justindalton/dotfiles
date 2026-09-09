@@ -36,6 +36,7 @@
       "~/.herdr/worktrees/**": "allow"
     },
     "bash": {
+      "git rebase*": "allow",
       "pup *": "ask",
       "/opt/homebrew/bin/pup *": "ask",
       "posthog-cli *": "ask",
