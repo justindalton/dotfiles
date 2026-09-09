@@ -2,6 +2,7 @@
 description: Reviews code for correctness, security, performance, and maintainability.
 mode: subagent
 model: openai/gpt-5.6-sol
+color: "#BE185D"
 textVerbosity: low
 permission:
   edit: deny
