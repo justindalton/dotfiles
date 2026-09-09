@@ -1,7 +1,7 @@
 ---
 description: Coordinates approved work by dispatching implementation subagents. Writes no code.
 mode: primary
-model: openai/gpt-5.6-terra
+model: openai/gpt-5.6-sol
 reasoningEffort: medium
 textVerbosity: low
 permission:
