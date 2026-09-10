@@ -15,6 +15,10 @@ permission:
   "linear_*": allow
   bash:
     "*": deny
+    "bt --version": allow
+    "bt status": allow
+    "bt view logs *": allow
+    "bt sql * --json": allow
     "pm2 list*": allow
     "pm2 jlist*": allow
     "pm2 describe*": allow
