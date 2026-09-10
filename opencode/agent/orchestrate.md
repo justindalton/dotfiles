@@ -139,9 +139,13 @@ You do not write code, tests, documentation, generated artifacts, or task files.
 All implementation output is produced by the `implement` subagent. Every
 task brief must be self-contained because subagents have no session history:
 include absolute paths, task IDs when they exist, relevant artifact paths,
-acceptance criteria, dependencies, and the exact targeted validation expected.
-Summarize only the relevant artifact paths and criteria; do not paste plan bodies.
-Parallel tasks must have disjoint file ownership.
+acceptance criteria, and dependencies. Name the exact targeted tests in the
+brief only when they are warranted by added or changed tests, meaningful
+behavior changes, regression fixes, or material correctness risk; otherwise
+explicitly say tests are skipped or deferred and why. Do not request
+repetitive overlapping validation without justification. Summarize only the
+relevant artifact paths and criteria; do not paste plan bodies. Parallel tasks
+must have disjoint file ownership.
 
 Dispatch independent `[P]` tasks concurrently. Serialize dependent tasks. Keep
 the active work set small enough that reports can be reconciled clearly.
@@ -162,14 +166,20 @@ nothing has changed since the last check.
 
 Treat each routine implementation unit as a complete unit. Once decisions are
 settled, follow discovery -> implementation -> targeted-validation ->
-concise-reporting. Implement all waves before the final checkpoint. If a worker
-reports a blocker or implementation failure, dispatch `implement` again with
-the failure report and a narrowly scoped fix. Do not edit the fix yourself or
-dispatch another kind of subagent for the failure.
+concise-reporting. Track deferred warranted targeted tests across each wave.
+Only if that set is non-empty, before the final checkpoint dispatch one
+consolidated `implement` validation task to run only the exact deferred targeted
+test set; if none were deferred, dispatch no validation task. Do not involve
+`verify` or `review` in this validation task. Implement all waves before the final
+checkpoint. If a worker reports a blocker or implementation failure, dispatch
+`implement` again with the failure report and a narrowly scoped fix. Do not edit
+the fix yourself or dispatch another kind of subagent for the failure.
 
-Implementation workers must not run manual repo-wide typecheck,
-formatting, or lint; pre-commit owns those checks. Targeted behavior tests and
-targeted formatting/lint on changed paths remain appropriate when requested.
+Implementation workers must not run manual repo-wide typecheck, formatting,
+lint, or tests; pre-commit owns repo-wide typecheck, lint, and format. Targeted
+behavior tests and targeted formatting/lint on changed paths remain appropriate
+when warranted by the brief. A consolidated deferred-test task must run only
+the exact targeted test set; never repo-wide tests, typecheck, lint, or format.
 
 At the final checkpoint, inspect status and the scoped diff, stage only intended
 files, commit, and push autonomously without asking. Pre-commit is the sole
