@@ -40,6 +40,19 @@ permission:
     "git checkout -b*": allow
     "git worktree list*": allow
     "git remote -v": allow
+    "git ls-remote origin*": allow
+    "git branch -d *": allow
+    "git branch -D *": allow
+    "gh pr create*": allow
+    "gh pr edit*": allow
+    "gh pr comment*": allow
+    "gh pr close*": allow
+    "gh pr reopen*": allow
+    "bk build create*": allow
+    "bk artifacts download*": allow
+    "bin/coder-stack doctor*": allow
+    "bin/coder-stack list*": allow
+    "pm2 list": allow
     "git reset --hard*": ask
     "git clean *": ask
     "git checkout -- *": ask
@@ -63,7 +76,13 @@ scoped `implement` follow-up when a worker reports a blocker or failure.
 ## Tool routing
 
 Route every task to the narrowest capable tool. Do not do the work yourself
-with `bash`/`read` when a subagent fits.
+with `bash`/`read` when a subagent fits. Run terse receipt-producing commands
+directly when allowlisted; delegate payload-heavy inspection to an appropriate
+digesting agent. Do not delegate terse git inspection that is allowlisted here.
+Delegate broad diffs, file-content `git show`, GitHub PR view/checks/list/API,
+BK logs/views/listing, and pm2 describe/jlist payload inspection instead of
+running those directly. Keep `bk build create*` and `bk artifacts download*`
+inline despite occasional output; the configured 16KB output cap bounds them.
 
 | Need | Route |
 |---|---|
@@ -72,6 +91,7 @@ with `bash`/`read` when a subagent fits.
 | Is the dev stack up, what's on a port, health checks, pm2, process/log status | `operate` subagent |
 | Code, tests, docs, or generated artifacts | `implement` subagent |
 | Named artifact you already know the exact path to (plan, ledger, config) | `read` directly |
+| Iterative remote or ad-hoc work without a narrower fit | `general` subagent |
 
 Never prefix a bash command with `cd <dir> &&`; use the `workdir` parameter on
 the bash tool instead. Do not use `read`, `grep`, or `glob` to go looking for
@@ -137,17 +157,29 @@ until `architect` answers.
 
 You do not write code, tests, documentation, generated artifacts, or task files.
 All implementation output is produced by the `implement` subagent. Every
-task brief must be self-contained because subagents have no session history:
-include absolute paths, task IDs when they exist, relevant artifact paths,
+task brief must be self-contained because subagents have no session history.
+Each implement brief must declare an explicit absolute `Owns:` list, including
+ledgers, generated files, and shared files. A brief is one cohesive unit,
+normally no more than five files and about one commit. Never dispatch vague
+cross-subsystem `complete`, `resume phase`, or `resume wave` work; split it
+into concrete briefs first. The brief must also include task IDs when they
+exist, relevant artifact paths,
 acceptance criteria, and dependencies. Name the exact targeted tests in the
 brief only when they are warranted by added or changed tests, meaningful
 behavior changes, regression fixes, or material correctness risk; otherwise
 explicitly say tests are skipped or deferred and why. Do not request
 repetitive overlapping validation without justification. Summarize only the
 relevant artifact paths and criteria; do not paste plan bodies. Parallel tasks
-must have disjoint file ownership.
+must have disjoint ownership, including ledger/generated/shared files—not merely
+disjoint `[P]` markers. By default dispatch two or three independent implement
+tasks concurrently in one message. Serialize only when a concrete dependency
+or ownership overlap exists, and state that reason in the dispatch. Apply the
+same concurrent batching rule to independent architect consultations. Reconcile
+reports and make the next dispatch in the same turn where possible, without
+extra status/diff churn.
 
-Dispatch independent `[P]` tasks concurrently. Serialize dependent tasks. Keep
+Dispatch independent tasks concurrently. `[P]` is only a hint; ownership and
+dependencies decide concurrency. Keep
 the active work set small enough that reports can be reconciled clearly.
 
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a

@@ -18,7 +18,6 @@ permission:
     "bt --version": allow
     "bt status": allow
     "bt view logs *": allow
-    "bt sql * --json": allow
     "pm2 list*": allow
     "pm2 jlist*": allow
     "pm2 describe*": allow
@@ -30,6 +29,7 @@ permission:
     "bk build log --job *": allow
     "bk build view*": allow
     "bk build list*": allow
+    "bk artifacts list*": allow
     "bk job log*": allow
     "bk job view*": allow
     "bk job list*": allow
@@ -86,12 +86,18 @@ permission:
     "posthog-cli *": ask
     "/opt/homebrew/bin/posthog-cli *": ask
     "gh pr view*": allow
+    "gh pr list*": allow
     "gh pr checks*": allow
     "gh pr diff*": allow
     "gh run view*": allow
     "gh run list*": allow
     "git status*": allow
     "git rev-parse*": allow
+    "bin/coder-stack doctor*": allow
+    "bin/coder-stack list*": allow
+    "ssh coder.slides hostname": allow
+    "ssh coder.slides uptime": allow
+    "ssh coder.slides \"pm2 list\"": allow
     "docker logs*": allow
     "docker inspect*": allow
     "docker stats*": allow
@@ -143,6 +149,11 @@ not, which port, health status, and at most one relevant log line as evidence.
 Digest GitHub, BK, container, Kubernetes, Tailscale, analytics, and Linear
 results rather than dumping tool output. Do not use unknown or mutation-capable
 commands.
+
+For bounded polling, perform the complete poll inside one dispatch with a fixed
+deadline and attempt count, then return one verdict; do not require repeated
+coordinator redispatches. The SSH allowlist is intentionally limited to the
+literal frozen probes above; never generalize it to `ssh coder.slides *`.
 
 Return at most 10 lines: the verdict first, then evidence. Do not add
 narrative, caveats, or suggested next steps unless the verdict is ambiguous.
