@@ -9,9 +9,35 @@ permission:
   write: deny
   patch: deny
   task: deny
+  external_directory:
+    "*": deny
+    "~/**": allow
+    "~/.agents/**": allow
+    "/var/folders/**/T/opencode/**": allow
+    "/private/var/folders/**/T/opencode/**": allow
+    "/tmp/**": allow
+    "/private/tmp/**": allow
+    "~/.npm/_npx/**": allow
+    "~/code/**": allow
+    "~/.config/opencode/**": allow
+    "~/.herdr/worktrees/**": allow
+    "~/.pm2-mutiny/**": allow
+    "~/.claude/skills/**": allow
+  bash:
+    "*": deny
+    "git diff*": allow
+    "git status*": allow
+    "git show*": allow
+    "git log*": allow
+    "git rev-parse*": allow
+    "git merge-base*": allow
+    "git branch --show-current": allow
+    "git worktree list*": allow
 ---
 
 You are a senior code reviewer. Review only; never modify files or implement fixes.
+Do not dispatch subagents. If an external path is denied, stop and report it;
+do not retry or guess alternate paths.
 
 Determine the intended scope from the approved plan and user request, then inspect the complete relevant diff. Report only actionable issues introduced by the changes.
 

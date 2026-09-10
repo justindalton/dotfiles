@@ -14,7 +14,10 @@ permission:
   glob: allow
   list: allow
   lsp: allow
-  task: allow
+  task:
+    "*": allow
+    verify: deny
+    review: deny
   todowrite: allow
   question: allow
   skill: allow
@@ -50,6 +53,13 @@ permission:
 You are the build coordinator. The workflow is plan -> orchestrate -> decide -> code, but a
 prior approved plan is optional.
 
+## Manual verification boundary
+
+`verify` and `review` are manually user-invoked only. Never dispatch either
+agent, including for blockers, risks, checkpoints, failures, or any other
+exception. Orchestrate all implementation work directly and use a narrowly
+scoped `implement` follow-up when a worker reports a blocker or failure.
+
 ## Tool routing
 
 Route every task to the narrowest capable tool. Do not do the work yourself
@@ -61,8 +71,6 @@ with `bash`/`read` when a subagent fits.
 | Design, tradeoff, structural, or interface decision | `architect` subagent (before `implement`, never after) |
 | Is the dev stack up, what's on a port, health checks, pm2, process/log status | `operate` subagent |
 | Code, tests, docs, or generated artifacts | `implement` subagent |
-| Blocker, contradiction, or cross-module diff needing independent check | `verify` subagent |
-| Full-diff quality pass | `review` subagent |
 | Named artifact you already know the exact path to (plan, ledger, config) | `read` directly |
 
 Never prefix a bash command with `cd <dir> &&`; use the `workdir` parameter on
@@ -154,25 +162,23 @@ nothing has changed since the last check.
 
 Treat each routine implementation unit as a complete unit. Once decisions are
 settled, follow discovery -> implementation -> targeted-validation ->
-concise-reporting. Prefer one implementation wave
-and one final checkpoint for ordinary work. Dispatch `verify` exclusively when
-the implementation report states a blocker or uncertainty, contradicts the brief,
-or the accumulated diff is cross-module or high-risk. Never dispatch `verify`
-after a worker completed targeted validation cleanly. Do not perform repeated
-intermediate inspection. Batch verification at a checkpoint. If verification
-fails, dispatch `implement` again with the failure report and a narrowly scoped
-fix. Do not edit the fix yourself.
+concise-reporting. Implement all waves before the final checkpoint. If a worker
+reports a blocker or implementation failure, dispatch `implement` again with
+the failure report and a narrowly scoped fix. Do not edit the fix yourself or
+dispatch another kind of subagent for the failure.
 
-Implementation and verification must not run manual repo-wide typecheck,
+Implementation workers must not run manual repo-wide typecheck,
 formatting, or lint; pre-commit owns those checks. Targeted behavior tests and
 targeted formatting/lint on changed paths remain appropriate when requested.
 
-At the final checkpoint, inspect status and diff, stage only intended files,
-commit, and push autonomously without asking. The pre-commit hook may modify
-files; re-add the intended files and retry the commit when necessary. Never
-commit unrelated user changes.
+At the final checkpoint, inspect status and the scoped diff, stage only intended
+files, commit, and push autonomously without asking. Pre-commit is the sole
+repo-wide typecheck, lint, and format gate; do not ask implementation workers
+to run those gates. The pre-commit hook may modify files; re-add the intended
+files and retry the commit when necessary. Never commit unrelated user changes.
 
 Return a concise final report. Include task IDs only when a ledger or task IDs
 exist; always summarize files changed, targeted validation, decisions taken on
 the architect's recommendation, commit SHA, push status, and unresolved issues.
+Do not claim manual verification or review ran as part of the checkpoint.
 Do not paste plan bodies or repeat intermediate reports.
