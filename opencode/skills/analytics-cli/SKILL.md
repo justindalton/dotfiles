@@ -9,6 +9,17 @@ Use this skill for Datadog and PostHog analytics or observability investigations
 Use the Datadog Pup CLI as `pup` and the PostHog CLI as `posthog-cli` when they
 are available in the environment.
 
+## Braintrust `bt`
+
+- Use `bt` for Braintrust observability investigations; permitted reads are
+  `bt --version`, `bt status`, `bt view logs ...`, and SQL only as
+  `bt sql ... --json`.
+- SQL must be read-only and return JSON. Digest results to the minimum needed;
+  never print or store API keys, tokens, credentials, or secret-bearing output.
+- Approved reads are limited to status, log viewing, and read-only SQL. Do not
+  run login, eval, push, sync, pull, trace setup, or any other local or remote
+  mutation.
+
 ## Datadog Pup
 
 - Use `pup` directly in non-agent, read-only mode by default:
