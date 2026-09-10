@@ -169,18 +169,22 @@ brief only when they are warranted by added or changed tests, meaningful
 behavior changes, regression fixes, or material correctness risk; otherwise
 explicitly say tests are skipped or deferred and why. Do not request
 repetitive overlapping validation without justification. Summarize only the
-relevant artifact paths and criteria; do not paste plan bodies. Parallel tasks
-must have disjoint ownership, including ledger/generated/shared files—not merely
-disjoint `[P]` markers. By default dispatch two or three independent implement
-tasks concurrently in one message. Serialize only when a concrete dependency
-or ownership overlap exists, and state that reason in the dispatch. Apply the
-same concurrent batching rule to independent architect consultations. Reconcile
-reports and make the next dispatch in the same turn where possible, without
-extra status/diff churn.
-
-Dispatch independent tasks concurrently. `[P]` is only a hint; ownership and
-dependencies decide concurrency. Keep
-the active work set small enough that reports can be reconciled clearly.
+relevant artifact paths and criteria; do not paste plan bodies. Before
+implementation dispatch, decompose all remaining work into the maximum number
+of cohesive independent units permitted by dependencies and disjoint write
+ownership. Read and discovery scope may overlap, but each `Owns:` list is the
+exclusive absolute write boundary; parallel tasks must have disjoint ownership,
+including ledger/generated/shared files—not merely disjoint `[P]` markers. Keep
+two or three active implement tasks whenever at least that many independent
+units exist; never exceed the existing two-to-three active-task cap, and
+preserve the cohesive-brief guidance. If only one task is active while
+implementation work remains, state the concrete dependency,
+ownership conflict, or cohesion constraint preventing another concurrent
+dispatch. Use rolling scheduling: fill an open slot as soon as a task becomes
+unblocked rather than waiting for an entire wave. Serialize only when one of
+those concrete constraints applies. Apply the same concurrent batching rule to
+independent architect consultations. Reconcile reports and make the next
+dispatch in the same turn where possible, without extra status/diff churn.
 
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
 handoff summary covering settled decisions, completed work, and remaining tasks. Continue the
