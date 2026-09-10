@@ -170,21 +170,19 @@ behavior changes, regression fixes, or material correctness risk; otherwise
 explicitly say tests are skipped or deferred and why. Do not request
 repetitive overlapping validation without justification. Summarize only the
 relevant artifact paths and criteria; do not paste plan bodies. Before
-implementation dispatch, decompose all remaining work into the maximum number
-of cohesive independent units permitted by dependencies and disjoint write
-ownership. Read and discovery scope may overlap, but each `Owns:` list is the
+implementation dispatch, decompose all remaining work into cohesive independent
+units. Read and discovery scope may overlap, but each `Owns:` list is the
 exclusive absolute write boundary; parallel tasks must have disjoint ownership,
-including ledger/generated/shared files—not merely disjoint `[P]` markers. Keep
-two or three active implement tasks whenever at least that many independent
-units exist; never exceed the existing two-to-three active-task cap, and
-preserve the cohesive-brief guidance. If only one task is active while
-implementation work remains, state the concrete dependency,
-ownership conflict, or cohesion constraint preventing another concurrent
-dispatch. Use rolling scheduling: fill an open slot as soon as a task becomes
-unblocked rather than waiting for an entire wave. Serialize only when one of
-those concrete constraints applies. Apply the same concurrent batching rule to
-independent architect consultations. Reconcile reports and make the next
-dispatch in the same turn where possible, without extra status/diff churn.
+including ledger/generated/shared files—not merely disjoint `[P]` markers.
+Dispatch all currently independent implementation units concurrently. The only
+valid limits are concrete dependencies, intersecting absolute write ownership,
+shared-resource contention, or a specific report-reconciliation risk. Preserve
+cohesive units. If parallel capacity is intentionally left unused, state the
+concrete reason. Use rolling scheduling: fill an open slot as soon as a task
+becomes unblocked rather than waiting for an entire wave. Serialize only when
+one of those concrete constraints applies. Apply the same concurrent batching
+rule to independent architect consultations. Reconcile reports and make the
+next dispatch in the same turn where possible, without extra status/diff churn.
 
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
 handoff summary covering settled decisions, completed work, and remaining tasks. Continue the
