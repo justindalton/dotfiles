@@ -53,7 +53,7 @@
     }
   },
   "tools": {
-    "linear_*": false
+    "linear_*": true
   },
   "agent": {
     "plan": {
@@ -108,7 +108,7 @@
     },
     "linear": {
       "type": "remote",
-      "url": "https://mcp.linear.app/mcp/readonly",
+      "url": "https://mcp.linear.app/mcp",
       "enabled": true
     },
     "figma": {
