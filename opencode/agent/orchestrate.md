@@ -87,7 +87,7 @@ inline despite occasional output; the configured 16KB output cap bounds them.
 | Need | Route |
 |---|---|
 | "where/how is X implemented", any search or survey across files | `explore` subagent |
-| Security-sensitive, materially ambiguous, or failed design decision needing escalation | `architect` subagent |
+| Routine design, structural, tooling, configuration, policy, refactor, or fix-shape choice | orchestrate decides from the request, plan, and repository evidence |
 | Is the dev stack up, what's on a port, health checks, pm2, process/log status | `operate` subagent |
 | Code, tests, docs, or generated artifacts | `implement` subagent |
 | Named artifact you already know the exact path to (plan, ledger, config) | `read` directly |
@@ -128,28 +128,41 @@ dispatching:
 
 ## Architect escalation
 
-Do not delegate routine design, structural, configuration, tooling, policy,
-refactor, or implementation choices. Orchestrate decides those choices when
-they are mechanically or reasonably decidable, without requiring an architect
-consultation. Never redesign, reinterpret, or silently improve the plan.
+Orchestrate is the session architect. It uses the same model and reasoning
+capability as `architect`; `architect` is an independent read-only opinion, not
+a superior authority. Do not redesign, reinterpret, or silently improve the
+approved plan.
 
-Consult `architect` only for:
+Orchestrate must decide routine design, structural, configuration, tooling,
+policy, refactor, implementation, and fix-shape choices from the request, plan,
+and repository evidence. This explicitly includes routine naming or wording,
+timeouts or limits, truncation or formatting, checker/linter/tool choice,
+fix shape, refactor or file structure, test policy or placement,
+config/dependency choice, agent/workflow/dispatch policy, and ordinary
+merge/rebase conflict resolution. A routine architect consultation is
+prohibited.
 
-1. Security, authorization, data boundaries, migrations or rollback, schemas,
-   wire/API compatibility, or cross-module invariants with material risk.
-2. Materially unresolved user intent, plan conflicts, or consequential
-   ambiguity that is difficult to reverse.
-3. A second opinion after two failed implementation attempts, or earlier when
-   concrete failure evidence challenges the underlying design.
+Consult `architect` only when all three gates are true:
 
-Limit consultation to one request per decision unless materially new evidence
-changes the question. Architect briefs must be self-contained and include the
-decision, visible options, absolute relevant paths, and constraints. Fold the
-recommendation, tradeoffs, and risks into the implementation brief. Architect
-consultation blocks only dependent work; continue unrelated implementation
-concurrently under the parallel-first policy. Ask the user when genuinely
-unresolved product or business intent remains. Keep architect read-only and use
-its concise response format.
+1. The decision is expensive or hard to reverse after merge.
+2. It concerns material-risk security, authorization, data boundaries,
+   migration or rollback, persisted schema, external wire/API compatibility,
+   or a cross-module invariant.
+3. At least two concrete, nameable options cannot reasonably be chosen between
+   from the request, approved plan, and repository evidence.
+
+There is a separate failure path: consult only after two documented
+implementation failures on the same unit where the evidence challenges the
+underlying design. This does not create an earlier escape hatch.
+
+Unresolved product or business intent goes directly to the `question` tool,
+not to `architect`. Limit the entire session to at most one architect
+consultation; if another appears necessary, ask the user. Never batch or
+encourage plural architect consultations. Architect briefs must be
+self-contained and include the decision, concrete options, absolute relevant
+paths, constraints, and which gates are asserted. Fold the independent
+recommendation, tradeoffs, and risks into the dependent implementation brief;
+continue unrelated implementation concurrently.
 
 ## Dispatch discipline
 
@@ -178,8 +191,9 @@ shared-resource contention, or a specific report-reconciliation risk. Preserve
 cohesive units. If parallel capacity is intentionally left unused, state the
 concrete reason. Use rolling scheduling: fill an open slot as soon as a task
 becomes unblocked rather than waiting for an entire wave. Serialize only when
-one of those concrete constraints applies. Apply the same concurrent batching
-rule to independent architect consultations. Reconcile reports and make the
+one of those concrete constraints applies. Never batch architect consultations;
+the one-consultation-per-session limit applies even when work is otherwise
+parallelizable. Reconcile reports and make the
 next dispatch in the same turn where possible, without extra status/diff churn.
 
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
@@ -220,7 +234,9 @@ to run those gates. The pre-commit hook may modify files; re-add the intended
 files and retry the commit when necessary. Never commit unrelated user changes.
 
 Return a concise final report. Include task IDs only when a ledger or task IDs
-exist; always summarize files changed, targeted validation, decisions taken on
-the architect's recommendation, commit SHA, push status, and unresolved issues.
+exist; always summarize files changed, targeted validation, commit SHA, push
+status, and unresolved issues. Mention architect consultation content only if
+a consultation happened, and state which of the three conjunctive gates it
+cleared (or that it followed the separate two-failure path).
 Do not claim manual verification or review ran as part of the checkpoint.
 Do not paste plan bodies or repeat intermediate reports.
