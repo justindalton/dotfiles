@@ -21,6 +21,22 @@ permission:
   todowrite: allow
   question: allow
   skill: allow
+  external_directory:
+    "*": deny
+    "~/**": allow
+    "~/.agents/**": allow
+    "/var/folders/**/T/opencode/**": allow
+    "/private/var/folders/**/T/opencode/**": allow
+    "/tmp/**": allow
+    "/private/tmp/**": allow
+    "/tmp/opencode/**": allow
+    "/private/tmp/opencode/**": allow
+    "~/.npm/_npx/**": allow
+    "~/code/**": allow
+    "~/.config/opencode/**": allow
+    "~/.herdr/worktrees/**": allow
+    "~/.pm2-mutiny/**": allow
+    "~/.claude/skills/**": allow
   bash:
     "*": deny
     "git status*": allow
@@ -53,14 +69,18 @@ permission:
     "bin/coder-stack doctor*": allow
     "bin/coder-stack list*": allow
     "pm2 list": allow
-    "git reset --hard*": ask
-    "git clean *": ask
-    "git checkout -- *": ask
-    "git checkout .": ask
-    "git restore*": ask
-    "git push --force*": ask
-    "git push -f *": ask
+    "git reset --hard*": deny
+    "git clean *": deny
+    "git checkout -- *": deny
+    "git checkout .": deny
+    "git restore*": deny
+    "git push --force*": deny
+    "git push -f *": deny
     "git push --force-with-lease*": allow
+    "pup *": deny
+    "/opt/homebrew/bin/pup *": deny
+    "posthog-cli *": deny
+    "/opt/homebrew/bin/posthog-cli *": deny
 ---
 
 You are the build coordinator. The workflow is plan -> orchestrate -> decide -> code, but a
