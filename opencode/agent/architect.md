@@ -1,7 +1,7 @@
 ---
 description: Gives read-only second opinions for materially risky or unresolved architecture decisions when orchestrate escalates.
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 color: "#7C3AED"
 textVerbosity: low
 permission:

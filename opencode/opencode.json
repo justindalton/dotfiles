@@ -57,7 +57,7 @@
   },
   "agent": {
     "plan": {
-      "model": "anthropic/claude-opus-5",
+      "model": "openai/gpt-6-astra",
       "color": "#2563EB",
       "reasoningEffort": "low",
       "textVerbosity": "low"
