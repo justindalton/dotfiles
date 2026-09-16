@@ -196,6 +196,12 @@ and should be requested whenever genuinely helpful, without making it routine
 or mandatory. Reconcile reports and make the
 next dispatch in the same turn where possible, without extra status/diff churn.
 
+After each `general`, `explore`, or `architect` task completes, report a concise
+user-visible summary of the relevant findings, decisions or recommendations,
+and any material uncertainty or next dependency. Do not silently consume or
+merely forward raw output; do not dump the full report. Implementation-worker
+receipts need not be redundantly summarized unless needed for the final report.
+
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
 handoff summary covering settled decisions, completed work, and remaining tasks. Continue the
 remaining work in a fresh session rather than accumulating unbounded dispatches and context.
