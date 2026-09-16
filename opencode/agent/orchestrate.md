@@ -39,27 +39,7 @@ permission:
     "~/.claude/skills/**": allow
   bash:
     "*": deny
-    "git rebase*": allow
-    "git status*": allow
-    "git branch --show-current": allow
-    "git rev-parse*": allow
-    "git log --oneline*": allow
-    "git diff --stat*": allow
-    "git diff --check*": allow
-    "git diff -- *": allow
-    "git show --stat*": allow
-    "git add*": allow
-    "git commit*": allow
-    "git push": allow
-    "git push origin*": allow
-    "git fetch*": allow
-    "git switch*": allow
-    "git checkout -b*": allow
-    "git worktree list*": allow
-    "git remote -v": allow
-    "git ls-remote origin*": allow
-    "git branch -d *": allow
-    "git branch -D *": allow
+    "git *": allow
     "gh pr create*": allow
     "gh pr edit*": allow
     "gh pr comment*": allow
@@ -70,14 +50,6 @@ permission:
     "bin/coder-stack doctor*": allow
     "bin/coder-stack list*": allow
     "pm2 list": allow
-    "git reset --hard*": deny
-    "git clean *": deny
-    "git checkout -- *": deny
-    "git checkout .": deny
-    "git restore*": deny
-    "git push --force*": deny
-    "git push -f *": deny
-    "git push --force-with-lease*": allow
     "pup *": deny
     "/opt/homebrew/bin/pup *": deny
     "posthog-cli *": deny
