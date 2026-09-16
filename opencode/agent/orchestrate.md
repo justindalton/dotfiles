@@ -39,6 +39,7 @@ permission:
     "~/.claude/skills/**": allow
   bash:
     "*": deny
+    "git rebase*": allow
     "git status*": allow
     "git branch --show-current": allow
     "git rev-parse*": allow
