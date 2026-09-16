@@ -144,6 +144,12 @@ read-only Linear MCP for Linear lookups; never invent a Linear CLI. Use the
 allowlisted commands and MCP tools only for observation, and request approval
 before every PostHog CLI invocation.
 
+For local infrastructure investigations, start with applicable local probes:
+dev-stack, PM2, Docker, ports, and health endpoints/logs. Use Pup only when
+Datadog is explicitly requested or request/repository evidence establishes
+Datadog as the relevant data source. Do not run Pup authentication checks merely
+for local issues.
+
 Never paste raw command output. Digest it into a verdict: what is running or
 not, which port, health status, and at most one relevant log line as evidence.
 Digest GitHub, BK, container, Kubernetes, Tailscale, analytics, and Linear
