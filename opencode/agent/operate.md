@@ -1,5 +1,5 @@
 ---
-description: Read-only dev-stack/process/health probe for orchestrate. Digests raw ops output into short verdicts.
+description: Read-only dev-stack/process/health probe for orchestrate. Digests raw ops output into short verdicts; configured mutations require approval.
 mode: subagent
 model: openai/gpt-5.6-luna
 color: "#0E7490"
@@ -85,6 +85,40 @@ permission:
     "/opt/homebrew/bin/pup --no-agent --read-only version": allow
     "posthog-cli *": ask
     "/opt/homebrew/bin/posthog-cli *": ask
+    "posthog-cli --help": allow
+    "/opt/homebrew/bin/posthog-cli --help": allow
+    "posthog-cli --version": allow
+    "/opt/homebrew/bin/posthog-cli --version": allow
+    "posthog-cli help *": allow
+    "/opt/homebrew/bin/posthog-cli help *": allow
+    "posthog-cli api --help": allow
+    "/opt/homebrew/bin/posthog-cli api --help": allow
+    "posthog-cli api --agent-help": allow
+    "/opt/homebrew/bin/posthog-cli api --agent-help": allow
+    "posthog-cli api tools": allow
+    "/opt/homebrew/bin/posthog-cli api tools": allow
+    "posthog-cli api search *": allow
+    "/opt/homebrew/bin/posthog-cli api search *": allow
+    "posthog-cli api info *": allow
+    "/opt/homebrew/bin/posthog-cli api info *": allow
+    "posthog-cli api schema *": allow
+    "/opt/homebrew/bin/posthog-cli api schema *": allow
+    "posthog-cli api skill list*": allow
+    "/opt/homebrew/bin/posthog-cli api skill list*": allow
+    "posthog-cli exp endpoints list*": allow
+    "/opt/homebrew/bin/posthog-cli exp endpoints list*": allow
+    "posthog-cli exp endpoints get *": allow
+    "/opt/homebrew/bin/posthog-cli exp endpoints get *": allow
+    "posthog-cli exp endpoints diff *": allow
+    "/opt/homebrew/bin/posthog-cli exp endpoints diff *": allow
+    "posthog-cli exp task list*": allow
+    "/opt/homebrew/bin/posthog-cli exp task list*": allow
+    "posthog-cli exp task progress*": allow
+    "/opt/homebrew/bin/posthog-cli exp task progress*": allow
+    "posthog-cli exp schema status*": allow
+    "/opt/homebrew/bin/posthog-cli exp schema status*": allow
+    "posthog-cli exp query check *": allow
+    "/opt/homebrew/bin/posthog-cli exp query check *": allow
     "gh pr view*": allow
     "gh pr list*": allow
     "gh pr checks*": allow
@@ -141,8 +175,10 @@ processes, ports, health endpoints, or logs. Run the minimum commands needed;
 do not explore beyond the asked question. You may load only the analytics-cli
 skill when its documented read-only probes are relevant. Use the configured
 read-only Linear MCP for Linear lookups; never invent a Linear CLI. Use the
-allowlisted commands and MCP tools only for observation, and request approval
-before every PostHog CLI invocation.
+allowlisted commands and MCP tools only for observation. The configured PM2 and
+dev-stack mutation commands may run only after approval; otherwise remain a
+read-only probe. Request approval before every PostHog CLI command except the
+explicitly allowlisted help and safe discovery/read patterns.
 
 For local infrastructure investigations, start with applicable local probes:
 dev-stack, PM2, Docker, ports, and health endpoints/logs. Use Pup only when

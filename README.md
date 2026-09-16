@@ -40,8 +40,9 @@ OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
 ```
 
 The Sol agents remain available for review and architecture decisions. The
-read-only architect is used proactively and mandatorily for design, structural,
-and tradeoff decisions before implementation. Restart opencode after
+read-only architect may be consulted when an independent opinion is genuinely
+helpful for a design or tradeoff decision; routine consultation is optional,
+and orchestrate remains the decision-maker. Restart opencode after
 configuration or plugin changes so updated links and settings are loaded.
 
 The installer is idempotent, but refuses to replace any existing non-matching

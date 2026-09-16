@@ -40,8 +40,15 @@ are available in the environment.
 
 ## PostHog
 
-- Require explicit user approval before every `posthog-cli` command. No global
-  read-only enforcement has been established for this CLI.
+- The following `posthog-cli` commands are safe discovery/read operations and may
+  run without per-command approval: `--help`, `--version`, `help *`, `api --help`,
+  `api --agent-help`, `api tools`, `api search *`, `api info *`, `api schema *`,
+  `api skill list*`, `exp endpoints list*`, `exp endpoints get *`,
+  `exp endpoints diff *`, `exp task list*`, `exp task progress*`,
+  `exp schema status*`, and `exp query check *`.
+- Require explicit user approval before every other `posthog-cli` command,
+  including API calls, endpoint/query execution, pushes/pulls, task updates,
+  login, uploads, downloads, and any other potentially mutating command.
 - Do not output credentials, tokens, or other credential-bearing diagnostics.
 - Avoid returning sensitive resource payloads unless the user explicitly
   requests that data.
