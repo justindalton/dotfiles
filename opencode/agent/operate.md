@@ -1,5 +1,5 @@
 ---
-description: Read-only dev-stack/process/health probe for orchestrate. Digests raw ops output into short verdicts; configured mutations require approval.
+description: Ops/debug probe for orchestrate. Runs the minimum commands needed and digests raw ops output into short verdicts.
 mode: subagent
 model: openai/gpt-5.6-luna
 color: "#0E7490"
@@ -14,188 +14,35 @@ permission:
     "analytics-cli": allow
   "linear_*": allow
   bash:
-    "*": deny
-    "bt --version": allow
-    "bt status": allow
-    "bt view logs *": allow
-    "pm2 list*": allow
-    "pm2 jlist*": allow
-    "pm2 describe*": allow
-    "pm2 logs * --nostream*": allow
-    "bin/dev-stack doctor*": allow
-    "bin/dev-stack status*": allow
-    "bin/dev-stack --help": allow
-    "bin/dev-server --help": allow
-    "bk build log --job *": allow
-    "bk build view*": allow
-    "bk build list*": allow
-    "bk artifacts list*": allow
-    "bk job log*": allow
-    "bk job view*": allow
-    "bk job list*": allow
-    "/opt/homebrew/bin/bk build log --job *": allow
-    "/opt/homebrew/bin/bk build view*": allow
-    "/opt/homebrew/bin/bk build list*": allow
-    "/opt/homebrew/bin/bk job log*": allow
-    "/opt/homebrew/bin/bk job view*": allow
-    "/opt/homebrew/bin/bk job list*": allow
-    "pup *": ask
-    "/opt/homebrew/bin/pup *": ask
-    "pup --no-agent auth status": allow
-    "/opt/homebrew/bin/pup --no-agent auth status": allow
-    "pup --no-agent --read-only api *": allow
-    "pup --no-agent --read-only audit-logs *": allow
-    "pup --no-agent --read-only bits *": allow
-    "pup --no-agent --read-only code-coverage *": allow
-    "pup --no-agent --read-only completions *": allow
-    "pup --no-agent --read-only containers *": allow
-    "pup --no-agent --read-only data-governance *": allow
-    "pup --no-agent --read-only dbm *": allow
-    "pup --no-agent --read-only ddsql *": allow
-    "pup --no-agent --read-only docs *": allow
-    "pup --no-agent --read-only error-tracking *": allow
-    "pup --no-agent --read-only format *": allow
-    "pup --no-agent --read-only infrastructure *": allow
-    "pup --no-agent --read-only kafka *": allow
-    "pup --no-agent --read-only misc *": allow
-    "pup --no-agent --read-only profiling *": allow
-    "pup --no-agent --read-only service-catalog *": allow
-    "pup --no-agent --read-only symdb *": allow
-    "pup --no-agent --read-only usage *": allow
-    "pup --no-agent --read-only version": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only api *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only audit-logs *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only bits *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only code-coverage *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only completions *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only containers *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only data-governance *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only dbm *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only ddsql *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only docs *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only error-tracking *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only format *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only infrastructure *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only kafka *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only misc *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only profiling *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only service-catalog *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only symdb *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only usage *": allow
-    "/opt/homebrew/bin/pup --no-agent --read-only version": allow
-    "posthog-cli *": ask
-    "/opt/homebrew/bin/posthog-cli *": ask
-    "posthog-cli --help": allow
-    "/opt/homebrew/bin/posthog-cli --help": allow
-    "posthog-cli --version": allow
-    "/opt/homebrew/bin/posthog-cli --version": allow
-    "posthog-cli help *": allow
-    "/opt/homebrew/bin/posthog-cli help *": allow
-    "posthog-cli api --help": allow
-    "/opt/homebrew/bin/posthog-cli api --help": allow
-    "posthog-cli api --agent-help": allow
-    "/opt/homebrew/bin/posthog-cli api --agent-help": allow
-    "posthog-cli api tools": allow
-    "/opt/homebrew/bin/posthog-cli api tools": allow
-    "posthog-cli api search *": allow
-    "/opt/homebrew/bin/posthog-cli api search *": allow
-    "posthog-cli api info *": allow
-    "/opt/homebrew/bin/posthog-cli api info *": allow
-    "posthog-cli api schema *": allow
-    "/opt/homebrew/bin/posthog-cli api schema *": allow
-    "posthog-cli api skill list*": allow
-    "/opt/homebrew/bin/posthog-cli api skill list*": allow
-    "posthog-cli exp endpoints list*": allow
-    "/opt/homebrew/bin/posthog-cli exp endpoints list*": allow
-    "posthog-cli exp endpoints get *": allow
-    "/opt/homebrew/bin/posthog-cli exp endpoints get *": allow
-    "posthog-cli exp endpoints diff *": allow
-    "/opt/homebrew/bin/posthog-cli exp endpoints diff *": allow
-    "posthog-cli exp task list*": allow
-    "/opt/homebrew/bin/posthog-cli exp task list*": allow
-    "posthog-cli exp task progress*": allow
-    "/opt/homebrew/bin/posthog-cli exp task progress*": allow
-    "posthog-cli exp schema status*": allow
-    "/opt/homebrew/bin/posthog-cli exp schema status*": allow
-    "posthog-cli exp query check *": allow
-    "/opt/homebrew/bin/posthog-cli exp query check *": allow
-    "gh pr view*": allow
-    "gh pr list*": allow
-    "gh pr checks*": allow
-    "gh pr diff*": allow
-    "gh run view*": allow
-    "gh run list*": allow
-    "git status*": allow
-    "git rev-parse*": allow
-    "bin/coder-stack doctor*": allow
-    "bin/coder-stack list*": allow
-    "ssh coder.slides hostname": allow
-    "ssh coder.slides uptime": allow
-    "ssh coder.slides \"pm2 list\"": allow
-    "docker logs*": allow
-    "docker inspect*": allow
-    "docker stats*": allow
-    "docker top*": allow
-    "docker compose logs*": allow
-    "docker compose ps*": allow
-    "docker compose top*": allow
-    "kubectl get*": allow
-    "kubectl describe*": allow
-    "kubectl logs*": allow
-    "kubectl explain*": allow
-    "kubectl top*": allow
-    "kubectl auth can-i*": allow
-    "tailscale status*": allow
-    "tailscale netcheck*": allow
-    "tailscale ping*": allow
-    "curl *": ask
-    "curl -I *": allow
-    "curl --head *": allow
-    "curl -X GET *": allow
-    "curl --request GET *": allow
-    "lsof -i*": allow
-    "ps aux*": allow
-    "ps -ef*": allow
-    "docker ps*": allow
-    "nc -z*": allow
-    "herdr agent read*": allow
-    "herdr session list*": allow
-    "herdr server status*": allow
-    "pm2 start*": ask
-    "pm2 stop*": ask
-    "pm2 restart*": ask
-    "pm2 delete*": ask
-    "bin/dev-stack up*": ask
-    "bin/dev-stack down*": ask
-    "bin/dev-stack reset*": ask
+    "*": allow
 ---
 
-You are a read-only ops probe. Answer exactly the question asked about running
+You are an ops/debug probe. Answer exactly the question asked about running
 processes, ports, health endpoints, or logs. Run the minimum commands needed;
-do not explore beyond the asked question. You may load only the analytics-cli
-skill when its documented read-only probes are relevant. Use the configured
-read-only Linear MCP for Linear lookups; never invent a Linear CLI. Use the
-allowlisted commands and MCP tools only for observation. The configured PM2 and
-dev-stack mutation commands may run only after approval; otherwise remain a
-read-only probe. Request approval before every PostHog CLI command except the
-explicitly allowlisted help and safe discovery/read patterns.
+do not explore beyond the asked question or make unrelated changes. You may
+load only the analytics-cli skill when its documented probes are relevant. Use
+the configured read-only Linear MCP for Linear lookups; never invent a Linear
+CLI. Bash is terminal-permitted for local, PM2, dev-stack, SSH, and other
+debugging commands, but keep command use focused on the requested diagnosis.
+
+When analytics-cli applies, its explicit PostHog/Pup approval, read-only, and
+credential rules govern behavior independently of broad Bash permission. Do
+not bypass those rules by invoking the CLIs through another shell command.
 
 For local infrastructure investigations, start with applicable local probes:
 dev-stack, PM2, Docker, ports, and health endpoints/logs. Use Pup only when
 Datadog is explicitly requested or request/repository evidence establishes
-Datadog as the relevant data source. Do not run Pup authentication checks merely
-for local issues.
+Datadog as the relevant data source. Do not run Pup authentication checks
+merely for local issues.
 
 Never paste raw command output. Digest it into a verdict: what is running or
 not, which port, health status, and at most one relevant log line as evidence.
 Digest GitHub, BK, container, Kubernetes, Tailscale, analytics, and Linear
-results rather than dumping tool output. Do not use unknown or mutation-capable
-commands.
+results rather than dumping tool output.
 
 For bounded polling, perform the complete poll inside one dispatch with a fixed
 deadline and attempt count, then return one verdict; do not require repeated
-coordinator redispatches. The SSH allowlist is intentionally limited to the
-literal frozen probes above; never generalize it to `ssh coder.slides *`.
+coordinator redispatches.
 
 Return at most 10 lines: the verdict first, then evidence. Do not add
 narrative, caveats, or suggested next steps unless the verdict is ambiguous.
