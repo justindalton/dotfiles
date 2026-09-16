@@ -1,11 +1,15 @@
 ---
 name: analytics-cli
-description: Use for Datadog, Pup, PostHog, analytics, observability, metrics, logs, traces, dashboards, or event investigations; provides safe CLI guidance for read-only inspection and approved mutations.
+description: Use for Datadog/Pup, PostHog, Braintrust, or remote analytics/observability telemetry investigations when explicitly requested or established as the relevant data source; provides safe CLI guidance for read-only inspection and approved mutations.
 ---
 
 # Analytics CLI
 
-Use this skill for Datadog and PostHog analytics or observability investigations.
+Use this skill only for Datadog/Pup, PostHog, Braintrust, or remote analytics and
+observability telemetry when the user explicitly requests that source or the
+request/repository evidence establishes it as relevant. Do not use it for
+generic local infrastructure, process, port, Docker, dev-stack, or local log
+investigations; start with applicable local probes instead.
 Use the Datadog Pup CLI as `pup` and the PostHog CLI as `posthog-cli` when they
 are available in the environment.
 
