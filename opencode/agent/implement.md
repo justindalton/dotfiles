@@ -5,7 +5,10 @@ model: openai/gpt-5.6-luna
 color: "#15803D"
 textVerbosity: low
 permission:
-  task: deny
+  task:
+    "*": deny
+    explore: allow
+    operate: allow
   bash:
     "npm run typecheck*": deny
     "npm run lint": deny
@@ -106,6 +109,11 @@ controls when a test is requested, but cannot request repetitive overlapping
 validation without justification. Run targeted formatting/lint on changed
 paths when needed, including oxfmt where applicable. Report which targeted
 tests ran or why tests were skipped or deferred.
+
+Delegation is limited to narrowly scoped, read-only supporting discovery or
+operational investigation through the explicitly allowed helper agents. Use it
+only for non-overlapping support; remain responsible for the exact ownership
+boundary, and never delegate writes or use delegation to expand scope.
 
 Do not run repo-wide typecheck, lint, or formatting; pre-commit owns those
 checks. Targeted behavior tests and path-scoped lint or formatting on changed
