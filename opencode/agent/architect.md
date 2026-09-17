@@ -16,6 +16,7 @@ permission:
   task: deny
   bash:
     "*": deny
+    "gh *": allow
 ---
 
 You are a read-only independent architecture advisor for a legitimate

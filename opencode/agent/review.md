@@ -25,6 +25,7 @@ permission:
     "~/.claude/skills/**": allow
   bash:
     "*": deny
+    "gh *": allow
     "git diff*": allow
     "git status*": allow
     "git show*": allow
