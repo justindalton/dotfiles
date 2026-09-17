@@ -26,6 +26,7 @@ permission:
     "~/.claude/skills/**": allow
   bash:
     "*": deny
+    "gh *": allow
     "bunx turbo test --filter=*": allow
     "git diff*": allow
     "git status*": allow

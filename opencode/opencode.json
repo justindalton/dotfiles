@@ -79,6 +79,7 @@
       "posthog-cli exp query check *": "allow",
       "/opt/homebrew/bin/posthog-cli exp query check *": "allow",
       "git rebase*": "allow",
+      "gh *": "allow",
       "pup *": "ask",
       "/opt/homebrew/bin/pup *": "ask",
       "pup --no-agent auth status*": "allow",
