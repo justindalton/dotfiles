@@ -130,7 +130,7 @@
         "exec \"$HOME/.config/opencode/bin/playwright-mcp-worktree\" \"$@\"",
         "opencode-playwright"
       ],
-      "enabled": false,
+      "enabled": true,
       "timeout": 30000
     },
     "browsermcp": {
