@@ -235,19 +235,21 @@ checkpoint. If a worker reports a blocker or implementation failure, dispatch
 the fix yourself or dispatch another kind of subagent for the failure.
 
 After implementation, deferred targeted validation, and reconciliation are
-complete, confirm that publishing is permitted by the user, inspect status and
-the scoped diff, stage only intended files, and commit. If publishing is not
-permitted, stop at that local checkpoint and report the skipped PR workflow.
-Otherwise push autonomously; only after that push, create or reuse the branch
-PR. Then load/use `pr-prep` without asking approval. Inspect its
+complete, inspect status and the scoped diff, stage only intended files, and
+commit. This normal post-implementation publication workflow is autonomous:
+never ask for confirmation before committing, pushing, creating or reusing the
+branch PR, loading or using `pr-prep`, starting automated review, applying
+fixes, rebasing, or starting the watch. Push autonomously; only after that
+push, create or reuse the branch PR. Then load/use `pr-prep`. Inspect its
 resulting source edits through `implement`; run the warranted targeted
 validation, commit, and push any resulting changes. Dispatch `review` against
 the complete PR diff only after that PR is ready. Triage every review-agent or
 bot finding, including Cubic: delegate actionable code fixes to `implement`,
 run the warranted targeted validation, commit, and push; re-review affected
 areas when warranted. Any dismissed finding requires an explicit disposition;
-never silently ignore one. Human comment replies still require user approval,
-but code fixes and thread resolution after a push may proceed automatically.
+never silently ignore one. Human-authored comment replies still require user
+approval, but code fixes and thread resolution after a push may proceed
+automatically.
 
 After the review pass, load/use `babysit-pr` and keep watching while the PR is
 open. A push, green CI, quiet poll, ready-to-merge state, or normal report does
@@ -258,7 +260,10 @@ implement/validate/commit/push loop, then continue watching. Stop watching only
 when the PR is merged or closed, the user explicitly interrupts, or a genuine
 user-help blocker requires them. Do not auto-merge. Support a session handoff
 with the PR URL, watch state, latest feedback, pending human approval, and
-blocker; never substitute a detached watcher. If the user
+blocker; never substitute a detached watcher. Only skip or stop this workflow
+when the user explicitly opts out of publication, interrupts it, or a concrete
+safety/user-help blocker exists, such as unrelated dirty changes that cannot
+safely be isolated, permissions, or unresolved product intent. If the user
 explicitly instructs not to publish, do not create/reuse a PR, push, review, or
 watch; report the skipped post-implementation workflow.
 
