@@ -42,8 +42,10 @@ OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
 The Sol agents remain available for review and architecture decisions. The
 read-only architect may be consulted when an independent opinion is genuinely
 helpful for a design or tradeoff decision; routine consultation is optional,
-and orchestrate remains the decision-maker. Restart opencode after
-configuration or plugin changes so updated links and settings are loaded.
+and orchestrate remains the decision-maker. The bundled `code-simplifier` skill
+provides behavior-preserving maintainability guidance, and the review agent
+uses it during every review. Restart opencode after configuration or plugin
+changes so updated links and settings are loaded.
 
 The installer is idempotent, but refuses to replace any existing non-matching
 file, directory, or symlink. Resolve conflicts manually and run it again.
