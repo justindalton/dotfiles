@@ -26,6 +26,7 @@ Prioritize readable, explicit code over terseness:
 Verify that every proposed simplification is behavior-preserving and genuinely
 improves clarity or maintainability. Document only significant refinements.
 
-This skill is adapted from Anthropic's official code-simplifier prompt:
+This adaptation is based on Anthropic's official code-simplifier prompt:
 <https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/agents/code-simplifier.md>.
-That source is distributed under the Apache License 2.0.
+The applicable Apache License 2.0 text is included in the adjacent `LICENSE`
+file.
