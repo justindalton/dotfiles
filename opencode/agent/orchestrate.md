@@ -236,20 +236,29 @@ the fix yourself or dispatch another kind of subagent for the failure.
 
 After implementation, deferred targeted validation, and reconciliation are
 complete, inspect status and the scoped diff, stage only intended files, and
-commit. This normal post-implementation publication workflow is autonomous:
-never ask for confirmation before committing, pushing, creating or reusing the
-branch PR, loading or using `pr-prep`, starting automated review, applying
-fixes, rebasing, or starting the watch. Push autonomously; only after that
-push, create or reuse the branch PR. Then load/use `pr-prep`. Inspect its
-resulting source edits through `implement`; run the warranted targeted
-validation, commit, and push any resulting changes. Dispatch `review` against
-the complete PR diff only after that PR is ready. Triage every review-agent or
-bot finding, including Cubic: delegate actionable code fixes to `implement`,
-run the warranted targeted validation, commit, and push; re-review affected
-areas when warranted. Any dismissed finding requires an explicit disposition;
-never silently ignore one. Human-authored comment replies still require user
-approval, but code fixes and thread resolution after a push may proceed
-automatically.
+commit. Before publication, read the repository-level `AGENTS.md` (when
+present) for a publication policy. An explicit repository policy overrides the
+default PR workflow below, while an explicit user instruction not to publish
+still takes precedence. If the repository policy requires direct publication,
+push the commit to its designated branch autonomously. Skip PR creation or
+reuse, `pr-prep`, automated PR review, and PR babysitting, and report that each
+was skipped due to repository policy. Do not ask for confirmation before
+committing or pushing.
+
+Without such a repository policy, this normal post-implementation publication
+workflow is autonomous: never ask for confirmation before committing, pushing,
+creating or reusing the branch PR, loading or using `pr-prep`, starting
+automated review, applying fixes, rebasing, or starting the watch. Push
+autonomously; only after that push, create or reuse the branch PR. Then
+load/use `pr-prep`. Inspect its resulting source edits through `implement`; run
+the warranted targeted validation, commit, and push any resulting changes.
+Dispatch `review` against the complete PR diff only after that PR is ready.
+Triage every review-agent or bot finding, including Cubic: delegate actionable
+code fixes to `implement`, run the warranted targeted validation, commit, and
+push; re-review affected areas when warranted. Any dismissed finding requires
+an explicit disposition; never silently ignore one. Human-authored comment
+replies still require user approval, but code fixes and thread resolution after
+a push may proceed automatically.
 
 After the review pass, load/use `babysit-pr` and keep watching while the PR is
 open. A push, green CI, quiet poll, ready-to-merge state, or normal report does
@@ -303,7 +312,8 @@ behavior tests and targeted formatting/lint on changed paths remain appropriate
 when warranted by the brief. A consolidated deferred-test task must run only
 the exact targeted test set; never repo-wide tests, typecheck, lint, or format.
 
-At the final checkpoint, perform the post-implementation PR workflow above.
+At the final checkpoint, perform the post-implementation publication workflow
+above, using the repository policy when one is present.
 Pre-commit is the sole repo-wide typecheck, lint, and format gate; do not ask
 implementation workers to run those gates. The pre-commit hook may modify
 files; re-add the intended files and retry the commit when necessary. Never
@@ -311,9 +321,10 @@ commit unrelated user changes.
 
 Return a concise final report. Include task IDs only when a ledger or task IDs
 exist; always summarize files changed, targeted validation, commit SHA, push
-status, PR URL/state, review findings and dispositions, watch/handoff state,
-and unresolved issues. Mention architect consultation content only if a
-consultation happened. Do not claim manual verification ran. If review ran as
-part of the automated PR workflow or by explicit user request, report that
+status, publication mode and any policy-skipped PR steps (or, for the default
+workflow, PR URL/state, review findings and dispositions, and watch/handoff
+state), plus unresolved issues. Mention architect consultation content only if
+a consultation happened. Do not claim manual verification ran. If review ran
+as part of the automated PR workflow or by explicit user request, report that
 fact and its outcome; otherwise do not claim review ran.
 Do not paste plan bodies or repeat intermediate reports.
