@@ -1,7 +1,7 @@
 ---
 description: Implements explicitly assigned plan tasks and validates the resulting code.
 mode: subagent
-model: openai/gpt-6-luna
+model: openai/gpt-5.6-luna
 color: "#15803D"
 textVerbosity: low
 permission:
