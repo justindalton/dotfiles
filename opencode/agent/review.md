@@ -1,7 +1,7 @@
 ---
 description: Reviews code for correctness, security, performance, and maintainability.
 mode: subagent
-model: openai/gpt-6-astra
+model: openai/gpt-6-sol
 color: "#BE185D"
 textVerbosity: low
 permission:

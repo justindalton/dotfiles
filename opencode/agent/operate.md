@@ -1,7 +1,7 @@
 ---
 description: Ops/debug probe for orchestrate. Runs the minimum commands needed and digests raw ops output into short verdicts.
 mode: subagent
-model: openai/gpt-6-astra
+model: openai/gpt-6-luna
 color: "#0E7490"
 textVerbosity: low
 permission:
