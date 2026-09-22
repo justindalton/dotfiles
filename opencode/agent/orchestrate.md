@@ -1,7 +1,7 @@
 ---
 description: Coordinates approved work by dispatching implementation subagents. Writes no code.
 mode: primary
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 color: "#C2410C"
 reasoningEffort: medium
 textVerbosity: low
