@@ -130,6 +130,23 @@ coordinate one self-contained implementation brief directly from the user
 request; do not require a plan file or todowrite. You still write no
 implementation code.
 
+Small, self-evident work also has no persistent orchestration artifacts. Create
+durable context only when work is expected to span sessions. Prefer an existing
+matching `specs/<branch>/` directory; otherwise use
+`.tmp/orchestrate/<work-id>/`, choosing the stable work ID once. It may contain:
+
+- `context.md`: curated settled decisions and rationale, proven setup or test
+  commands, reusable discoveries, explicit user preferences, and evidence
+  references. Record scope and evidence, mark superseded facts, and never save
+  transcripts or raw command output.
+- `checkpoint.md`: objective and acceptance criteria, task states, exclusive
+  ownership, worker/session IDs, repository and validation state,
+  publication/watch state, blockers, and the exact next action.
+
+Existing plan and task ledgers remain authoritative; reference them rather than
+duplicating them. Persist only curated facts, and never let persisted context
+override current user or repository instructions.
+
 ## Planning artifact detection
 
 For larger or non-trivial work, detect the available planning artifact before
@@ -145,6 +162,15 @@ dispatching:
    concise todowrite ledger and coordinate from the user request. Do not
    dispatch an implementation worker solely to persist a conversation plan to
    `.tmp`.
+
+When detecting a planning artifact or resuming work, read relevant persistent
+`context.md` and `checkpoint.md` when they exist, then load only referenced
+material relevant to the current decision. Include applicable validated
+discoveries and user corrections in later briefs. Only an implementation
+worker whose explicit `Owns:` list includes these artifacts may edit them.
+Batch context updates at milestones or before handoff, folding them into an
+already-needed worker where practical; do not dispatch after every receipt or
+create shared-file ownership collisions.
 
 ## Architect escalation
 
@@ -209,9 +235,20 @@ receipts need not be redundantly summarized unless needed for the final report.
 
 Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
 handoff summary covering settled decisions, completed work, remaining tasks, and (when a PR is
-open) its watch state and handoff data. Continue the remaining work in a fresh session rather
-than accumulating unbounded dispatches and context; a fresh session must resume the babysit-pr
-watch rather than silently abandoning it.
+open) its watch state and handoff data. Before handoff, reconcile receipts and persist
+completed/remaining work, deferred targeted tests, blockers, decisions, branch/commit/worktree,
+active worker IDs, and PR/watch state in the checkpoint. Report the exact checkpoint path and
+next action. Continue the remaining work in a fresh session rather than accumulating unbounded
+dispatches and context; a fresh session must resume the babysit-pr watch rather than silently
+abandoning it. Do not imply that active workers stopped or that work rolled over automatically.
+
+On resume, read the checkpoint and authoritative plan/task artifacts, inspect the current
+repository and worker state when supported, and tie prior validation to the recorded code state.
+Reconcile partial, uncertain, or stale state before redispatching; resume outstanding publication
+and watch obligations. Reconcile worker receipts against acceptance criteria and dependencies,
+carry validated discoveries and user corrections into later briefs, and resolve contradictions
+before dependent dispatch while unrelated work continues. For repetitive migrations, validate a
+representative slice before scaling parallel work.
 
 ## Git and diff hygiene
 
