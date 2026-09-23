@@ -125,3 +125,9 @@ you actually completed. Return a concise structured report, roughly 10–15 line
 when practical, with task IDs, paths changed, checks and results, generated
 outputs, and blockers or plan contradictions. Do not include code excerpts or
 repeat plan text.
+
+The receipt may additionally include reusable discovery as a fact, its scope,
+and evidence; a plan contradiction as the concrete mismatch and affected
+dependency; and the exact remaining work when progress is partial. Report
+discoveries, but do not edit persistent orchestration context unless the
+coordinator's explicit `Owns:` list includes those context artifacts.
