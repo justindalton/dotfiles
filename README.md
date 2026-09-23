@@ -55,6 +55,31 @@ relevant providers. Authentication state is never copied or committed. Supply
 secrets through the providers' local environment variables or login flows;
 never put secret values in this repository.
 
+### Jev compaction pilot
+
+`jev-compaction.ts` is auto-discovered from the linked global `plugins/`
+directory; it is intentionally not listed in `opencode.json`. Set
+`TYPESAFE_API_KEY` in your local environment (never commit or share it), then
+restart OpenCode. Before ordinary requests and before both manual `/compact`
+and automatic native compaction, Jev filters eligible historical tool calls and
+their results. The native compaction agent still writes the summary.
+
+The pinned upstream revision is
+`quinnjr/opencode-jev-compaction@9181265438237451d727acc529340096b80e5127`.
+Local defaults are a 100,000-token threshold, 12 preserved recent messages,
+0.35 keep threshold, 1,000-character result previews, and 5,000 ms per-request
+and total timeouts. Use `JEV_COMPACTION_DISABLED=1` to disable it,
+`JEV_COMPACTION_DEBUG=1` for diagnostics, and these environment variables to
+tune it: `JEV_COMPACTION_THRESHOLD`, `JEV_PRESERVE_RECENT`,
+`JEV_KEEP_THRESHOLD`, `JEV_TRUNCATE_HEAD_CHARS`, `JEV_TIMEOUT_MS`,
+`JEV_TOTAL_TIMEOUT_MS`, `JEV_MAX_CONCURRENT`, `JEV_STATE_INCLUDE_TEXT`,
+`JEV_MODEL`, and `JEV_BASE_URL`.
+
+Requests send data to TypeSafe: abridged user, assistant, and reasoning text,
+plus tool inputs and metadata; tool-result bodies are not sent. The plugin
+fails open: missing credentials, unavailable or slow Jev requests, and fitting
+failures leave the conversation unchanged.
+
 ## Validation and updates
 
 After changing configuration, validate JSON and shell syntax, inspect the diff,
