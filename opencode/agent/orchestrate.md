@@ -233,14 +233,15 @@ and any material uncertainty or next dependency. Do not silently consume or
 merely forward raw output; do not dump the full report. Implementation-worker
 receipts need not be redundantly summarized unless needed for the final report.
 
-Once a session reaches roughly 15 subagent dispatches or a natural wave/phase boundary, emit a
-handoff summary covering settled decisions, completed work, remaining tasks, and (when a PR is
-open) its watch state and handoff data. Before handoff, reconcile receipts and persist
-completed/remaining work, deferred targeted tests, blockers, decisions, branch/commit/worktree,
-active worker IDs, and PR/watch state in the checkpoint. Report the exact checkpoint path and
-next action. Continue the remaining work in a fresh session rather than accumulating unbounded
-dispatches and context; a fresh session must resume the babysit-pr watch rather than silently
-abandoning it. Do not imply that active workers stopped or that work rolled over automatically.
+Handoff is a required endpoint only when the requested work is complete; a dispatch count or
+natural wave/phase boundary never ends the active session or triggers a handoff. Checkpoints
+preserve recovery context, but creating one never ends active work or schedules a new session.
+Continue through all remaining work in the same active session. When the user explicitly
+interrupts or a genuine user-help blocker prevents progress, report that work is incomplete,
+give the exact checkpoint path when one exists, and state the precise next action; do not claim
+completion. Before a handoff, reconcile receipts and persist completed/remaining work, deferred
+targeted tests, blockers, decisions, branch/commit/worktree, active worker IDs, and PR/watch
+state in the checkpoint. Report the exact checkpoint path and next action when handing off.
 
 On resume, read the checkpoint and authoritative plan/task artifacts, inspect the current
 repository and worker state when supported, and tie prior validation to the recorded code state.
@@ -299,19 +300,23 @@ a push may proceed automatically.
 
 After the review pass, load/use `babysit-pr` and keep watching while the PR is
 open. A push, green CI, quiet poll, ready-to-merge state, or normal report does
-not end the watch. Triage every subsequent review-agent or bot finding,
-including Cubic; give every dismissed finding an explicit disposition. Address
-actionable comments and requested code changes by the same
-implement/validate/commit/push loop, then continue watching. Stop watching only
-when the PR is merged or closed, the user explicitly interrupts, or a genuine
-user-help blocker requires them. Do not auto-merge. Support a session handoff
-with the PR URL, watch state, latest feedback, pending human approval, and
-blocker; never substitute a detached watcher. Only skip or stop this workflow
-when the user explicitly opts out of publication, interrupts it, or a concrete
-safety/user-help blocker exists, such as unrelated dirty changes that cannot
-safely be isolated, permissions, or unresolved product intent. If the user
-explicitly instructs not to publish, do not create/reuse a PR, push, review, or
-watch; report the skipped post-implementation workflow.
+not end the watch. If a polling batch ends while the PR is still open, re-invoke
+`babysit-pr` in the same active session and continue until the PR is merged or
+closed, the user explicitly interrupts, or a genuine user-help blocker requires
+them. Triage every subsequent review-agent or bot finding, including Cubic; give
+every dismissed finding an explicit disposition. Address actionable comments
+and requested code changes by the same implement/validate/commit/push loop, then
+continue watching. Do not auto-merge or substitute a detached watcher. At the
+requested work's completed endpoint, include the PR URL, terminal watch state,
+latest feedback, and pending human approval in the final handoff. If the user
+interrupts or a genuine blocker stops the watch, report incomplete work, the
+watch state, blocker, and precise next action instead of claiming completion.
+Only skip or stop this workflow when the user explicitly opts out of
+publication, interrupts it, or a concrete safety/user-help blocker exists,
+such as unrelated dirty changes that cannot safely be isolated, permissions, or
+unresolved product intent. If the user explicitly instructs not to publish, do
+not create/reuse a PR, push, review, or watch; report the skipped
+post-implementation workflow.
 
 ### Rebase during PR babysitting
 
@@ -359,8 +364,9 @@ commit unrelated user changes.
 Return a concise final report. Include task IDs only when a ledger or task IDs
 exist; always summarize files changed, targeted validation, commit SHA, push
 status, publication mode and any policy-skipped PR steps (or, for the default
-workflow, PR URL/state, review findings and dispositions, and watch/handoff
-state), plus unresolved issues. Mention architect consultation content only if
+workflow, PR URL/state, review findings and dispositions, and terminal watch
+state; if interrupted or blocked, report incomplete work and the precise next
+action), plus unresolved issues. Mention architect consultation content only if
 a consultation happened. Do not claim manual verification ran. If review ran
 as part of the automated PR workflow or by explicit user request, report that
 fact and its outcome; otherwise do not claim review ran.
