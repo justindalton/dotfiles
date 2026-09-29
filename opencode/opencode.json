@@ -16,6 +16,15 @@
     "anthropic": {
       "options": {
         "setCacheKey": true
+      },
+      "models": {
+        "claude-opus-5-5": {
+          "limit": {
+            "context": 1000000,
+            "input": 922000,
+            "output": 128000
+          }
+        }
       }
     }
   },
@@ -27,19 +36,10 @@
     "external_directory": {
       "*": "ask",
       "~/**": "allow",
-      "~/.agents/**": "allow",
       "/var/folders/**/T/opencode/**": "allow",
       "/private/var/folders/**/T/opencode/**": "allow",
       "/tmp/**": "allow",
-      "/private/tmp/**": "allow",
-      "/tmp/opencode/**": "allow",
-      "/private/tmp/opencode/**": "allow",
-      "~/.npm/_npx/**": "allow",
-      "~/code/**": "allow",
-      "~/.config/opencode/**": "allow",
-      "~/.herdr/worktrees/**": "allow",
-      "~/.pm2-mutiny/**": "allow",
-      "~/.claude/skills/**": "allow"
+      "/private/tmp/**": "allow"
     },
     "bash": {
       "posthog-cli *": "ask",
@@ -85,7 +85,55 @@
       "pup --no-agent auth status*": "allow",
       "/opt/homebrew/bin/pup --no-agent auth status*": "allow",
       "pup --no-agent --read-only *": "allow",
-      "/opt/homebrew/bin/pup --no-agent --read-only *": "allow"
+      "/opt/homebrew/bin/pup --no-agent --read-only *": "allow",
+      "*npm run typecheck*": "deny",
+      "*npm typecheck*": "deny",
+      "*npm run lint*": "deny",
+      "*npm lint*": "deny",
+      "*npm run format*": "deny",
+      "*npm format*": "deny",
+      "*pnpm run typecheck*": "deny",
+      "*pnpm typecheck*": "deny",
+      "*pnpm run lint*": "deny",
+      "*pnpm lint*": "deny",
+      "*pnpm run format*": "deny",
+      "*pnpm format*": "deny",
+      "*yarn run typecheck*": "deny",
+      "*yarn typecheck*": "deny",
+      "*yarn run lint*": "deny",
+      "*yarn lint*": "deny",
+      "*yarn run format*": "deny",
+      "*yarn format*": "deny",
+      "*bun run typecheck*": "deny",
+      "*bun typecheck*": "deny",
+      "*bun run lint*": "deny",
+      "*bun lint*": "deny",
+      "*bun run format*": "deny",
+      "*bun format*": "deny",
+      "tsc": "deny",
+      "./node_modules/.bin/tsc": "deny",
+      "npx tsc": "deny",
+      "bunx tsc": "deny",
+      "pnpm exec tsc": "deny",
+      "yarn exec tsc": "deny",
+      "npm exec tsc": "deny",
+      "*tsc --noEmit*": "deny",
+      "*tsc -b*": "deny",
+      "*tsc --build*": "deny",
+      "*tsc -p*": "deny",
+      "*turbo typecheck*": "deny",
+      "*turbo lint*": "deny",
+      "*turbo format*": "deny",
+      "*eslint .": "deny",
+      "*eslint . *": "deny",
+      "*prettier .": "deny",
+      "*prettier . *": "deny",
+      "*biome .": "deny",
+      "*biome . *": "deny",
+      "*oxfmt .": "deny",
+      "*oxfmt . *": "deny",
+      "*oxlint .": "deny",
+      "*oxlint . *": "deny"
     }
   },
   "tools": {
@@ -113,11 +161,6 @@
     "compaction": {
       "model": "openai/gpt-6-luna",
       "color": "#64748B"
-    },
-    "operate": {
-      "tools": {
-        "linear_*": true
-      }
     }
   },
   "small_model": "openai/gpt-5.4-nano",

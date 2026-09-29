@@ -10,20 +10,7 @@ permission:
   patch: deny
   task: deny
   skill: allow
-  external_directory:
-    "*": deny
-    "~/**": allow
-    "~/.agents/**": allow
-    "/var/folders/**/T/opencode/**": allow
-    "/private/var/folders/**/T/opencode/**": allow
-    "/tmp/**": allow
-    "/private/tmp/**": allow
-    "~/.npm/_npx/**": allow
-    "~/code/**": allow
-    "~/.config/opencode/**": allow
-    "~/.herdr/worktrees/**": allow
-    "~/.pm2-mutiny/**": allow
-    "~/.claude/skills/**": allow
+  # Shared with verify and architect; keep these bash permissions in sync.
   bash:
     "*": deny
     "gh *": allow
@@ -35,6 +22,18 @@ permission:
     "git merge-base*": allow
     "git branch --show-current": allow
     "git worktree list*": allow
+    "bunx turbo test --filter=*": allow
+    "vitest run *": allow
+    "vitest --run *": allow
+    "bunx vitest run *": allow
+    "bunx vitest --run *": allow
+    "npx vitest run *": allow
+    "pnpm exec vitest run *": allow
+    "yarn exec vitest run *": allow
+    "bun test *": allow
+    "npm test -- *": allow
+    "pnpm test -- *": allow
+    "yarn test *": allow
 ---
 
 You are a senior code reviewer. Review only; never modify files or implement fixes.
@@ -64,7 +63,7 @@ Every finding must be anchored to changed code and use this template:
 - **Material impact:** Explain the meaningful correctness, security, performance, or maintainability consequence.
 - **Fix direction:** State the concise change that would address the issue.
 
-Report findings by severity. Do not report a concern that cannot be anchored to changed code with an exact repository-relative file path and line number or range. Do not use bare numbered summaries like the supplied example. If there are no findings, say so explicitly.
+Report findings by severity. Do not report a concern that cannot be anchored to changed code with an exact repository-relative file path and line number or range. Do not use bare numbered summaries. If there are no findings, say so explicitly.
 
 After the defect findings, always include a separate concise `## Simplification suggestions`
 section. This section is distinct from actionable correctness,
