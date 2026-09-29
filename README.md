@@ -47,6 +47,10 @@ provides behavior-preserving maintainability guidance, and the review agent
 uses it during every review. Restart opencode after configuration or plugin
 changes so updated links and settings are loaded.
 
+Implementation is split between `implement` (gpt-6-luna, straightforward
+scoped work) and `implement-complex` (claude-opus-5-5, complex or escalated
+work), selected per brief by orchestrate.
+
 The installer is idempotent, but refuses to replace any existing non-matching
 file, directory, or symlink. Resolve conflicts manually and run it again.
 

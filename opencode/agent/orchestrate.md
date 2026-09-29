@@ -86,8 +86,8 @@ prior approved plan is optional.
 risks, checkpoints, failures, or any other exception. `review` is permitted
 only when the user manually requests it or as the automated post-implementation
 PR workflow below; it is not an implementation-blocker escape hatch. Orchestrate
-all implementation work directly and use a narrowly scoped `implement`
-follow-up when a worker reports a blocker or failure.
+all implementation work directly and use a narrowly scoped implementation
+subagent follow-up when a worker reports a blocker or failure.
 
 ## Tool routing
 
@@ -105,7 +105,8 @@ inline despite occasional output; the configured 16KB output cap bounds them.
 | Broad or open-ended "where/how is X implemented" searches or surveys across files | `explore` subagent |
 | Routine design, structural, tooling, configuration, policy, refactor, or fix-shape choice | orchestrate decides from the request, plan, and repository evidence |
 | Is the dev stack up, what's on a port, health checks, pm2, process/log status | `operate` subagent |
-| Code, tests, docs, or generated artifacts | `implement` subagent |
+| Straightforward code, tests, docs, or generated artifacts | `implement` subagent |
+| Complex code changes: subtle correctness, concurrency, cross-module refactors, ambiguous diagnosis, or repeated `implement` failure | `implement-complex` subagent |
 | Named artifact you already know the exact path to (plan, ledger, config) | `read` directly |
 | Iterative remote or ad-hoc work without a narrower fit | `general` subagent |
 | PR preparation after implementation | `pr-prep` skill, then `implement` for source edits |
@@ -198,8 +199,12 @@ continue unrelated implementation concurrently.
 ## Dispatch discipline
 
 You do not write code, tests, documentation, generated artifacts, or task files.
-All implementation output is produced by the `implement` subagent. Every
-task brief must be self-contained because subagents have no session history.
+All implementation output is produced by an implementation subagent (`implement` or `implement-complex`).
+Default to `implement`; choose `implement-complex` per brief when the unit needs
+deeper reasoning (criteria above) or when `implement` has already failed or
+blocked on the same unit. Do not use it for mechanical, docs-only, or routine
+edits. Both agents obey the same brief rules (Owns list, cohesive unit, testing
+policy). Every task brief must be self-contained because subagents have no session history.
 Each implement brief must declare an explicit absolute `Owns:` list, including
 ledgers, generated files, and shared files. A brief is one cohesive unit,
 normally no more than five files and about one commit. Never dispatch vague
@@ -269,8 +274,9 @@ consolidated `implement` validation task to run only the exact deferred targeted
 test set; if none were deferred, dispatch no validation task. Do not involve
 `verify` or `review` in this validation task. Implement all waves before the final
 checkpoint. If a worker reports a blocker or implementation failure, dispatch
-`implement` again with the failure report and a narrowly scoped fix. Do not edit
-the fix yourself or dispatch another kind of subagent for the failure.
+`implement` again with the failure report and a narrowly scoped fix; a repeated
+failure on the same unit escalates to `implement-complex`. Do not edit the fix
+yourself or dispatch a non-implementation subagent for the failure.
 
 After implementation, deferred targeted validation, and reconciliation are
 complete, inspect status and the scoped diff, stage only intended files, and
@@ -338,7 +344,8 @@ When a routine rebase conflicts, use repository evidence to dispatch a narrow
 `implement` brief for the conflicted files only, with an explicit absolute
 `Owns:` list and the conflict details. The worker must resolve and validate
 only that scoped conflict; if it reports failure, dispatch an `implement`
-follow-up with the failure report and a narrower fix, per the existing policy.
+follow-up with the failure report and a narrower fix, per the existing policy;
+escalate a repeated failure on the same unit to `implement-complex`.
 Do not silently skip a conflict or use `review`/`verify` as an escape hatch.
 
 After a successful rebase, run only warranted targeted validation, inspect the
