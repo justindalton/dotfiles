@@ -10,24 +10,10 @@ permission:
   task:
     "*": deny
     explore: allow
-  external_directory:
-    "*": deny
-    "~/**": allow
-    "~/.agents/**": allow
-    "/var/folders/**/T/opencode/**": allow
-    "/private/var/folders/**/T/opencode/**": allow
-    "/tmp/**": allow
-    "/private/tmp/**": allow
-    "~/.npm/_npx/**": allow
-    "~/code/**": allow
-    "~/.config/opencode/**": allow
-    "~/.herdr/worktrees/**": allow
-    "~/.pm2-mutiny/**": allow
-    "~/.claude/skills/**": allow
+  # Shared with review and architect; keep these bash permissions in sync.
   bash:
     "*": deny
     "gh *": allow
-    "bunx turbo test --filter=*": allow
     "git diff*": allow
     "git status*": allow
     "git show*": allow
@@ -36,6 +22,7 @@ permission:
     "git merge-base*": allow
     "git branch --show-current": allow
     "git worktree list*": allow
+    "bunx turbo test --filter=*": allow
     "vitest run *": allow
     "vitest --run *": allow
     "bunx vitest run *": allow
