@@ -10,7 +10,7 @@
     "auto": true,
     "tail_turns": 8,
     "prune": true,
-    "reserved": 702000
+    "reserved": 772000
   },
   "provider": {
     "anthropic": {
@@ -161,6 +161,14 @@
     "compaction": {
       "model": "openai/gpt-6-luna",
       "color": "#64748B"
+    },
+    "orchestrate": {
+      "options": {
+        "cacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      }
     }
   },
   "small_model": "openai/gpt-5.4-nano",
