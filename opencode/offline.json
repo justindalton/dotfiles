@@ -1,0 +1,175 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["lmstudio"],
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1"
+      },
+      "models": {
+        "qwen3.8-27b-mlx": {
+          "name": "Qwen 3.8 27B MLX",
+          "tool_call": true,
+          "limit": {
+            "context": 40960,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+  "model": "lmstudio/qwen3.8-27b-mlx",
+  "small_model": "lmstudio/qwen3.8-27b-mlx",
+  "default_agent": "local-orchestrate",
+  "autoupdate": false,
+  "share": "disabled",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "tail_turns": 4,
+    "reserved": 10000
+  },
+  "agent": {
+    "compaction": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "title": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "summary": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "explore": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "general": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "build": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "plan": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "orchestrate": { "disable": true },
+    "implement": { "disable": true },
+    "implement-complex": { "disable": true },
+    "review": { "disable": true },
+    "verify": { "disable": true },
+    "operate": { "disable": true },
+    "architect": { "disable": true },
+    "local-orchestrate": {
+      "mode": "primary",
+      "description": "Coordinates local offline work and delegates scoped tasks to local agents.",
+      "color": "#0F766E",
+      "prompt": "{file:./offline/local-orchestrate.md}",
+      "model": "lmstudio/qwen3.8-27b-mlx",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "permission": {
+        "edit": "deny",
+        "task": {
+          "*": "deny",
+          "local-explore": "allow",
+          "local-implement": "allow",
+          "local-review": "allow"
+        },
+        "bash": {
+          "*": "deny",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git show*": "allow",
+          "git add *": "allow",
+          "git commit*": "allow",
+          "git rev-parse*": "allow",
+          "git push*": "deny"
+        },
+        "todowrite": "allow",
+        "question": "allow"
+      }
+    },
+    "local-explore": {
+      "mode": "subagent",
+      "description": "Performs concise, read-only repository discovery.",
+      "color": "#4338CA",
+      "prompt": "{file:./offline/local-explore.md}",
+      "model": "lmstudio/qwen3.8-27b-mlx",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "patch": "deny",
+        "task": "deny",
+        "bash": {
+          "*": "deny",
+          "git diff*": "allow",
+          "git status*": "allow",
+          "git show*": "allow",
+          "git log*": "allow",
+          "git rev-parse*": "allow",
+          "ls*": "allow",
+          "rg *": "allow"
+        }
+      }
+    },
+    "local-implement": {
+      "mode": "subagent",
+      "description": "Implements only explicitly scoped offline tasks.",
+      "color": "#15803D",
+      "prompt": "{file:./offline/local-implement.md}",
+      "model": "lmstudio/qwen3.8-27b-mlx",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "steps": 30,
+      "permission": {
+        "edit": "allow",
+        "task": "deny",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny"
+        }
+      }
+    },
+    "local-review": {
+      "mode": "subagent",
+      "description": "Reviews diffs for actionable defects without editing files.",
+      "color": "#BE185D",
+      "prompt": "{file:./offline/local-review.md}",
+      "model": "lmstudio/qwen3.8-27b-mlx",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "patch": "deny",
+        "task": "deny",
+        "bash": {
+          "*": "deny",
+          "git diff*": "allow",
+          "git status*": "allow",
+          "git show*": "allow",
+          "git log*": "allow",
+          "git rev-parse*": "allow",
+          "git merge-base*": "allow",
+          "git branch --show-current": "allow",
+          "git worktree list*": "allow",
+          "bunx turbo test --filter=*": "allow",
+          "vitest run *": "allow",
+          "vitest --run *": "allow",
+          "bunx vitest run *": "allow",
+          "bunx vitest --run *": "allow",
+          "npx vitest run *": "allow",
+          "pnpm exec vitest run *": "allow",
+          "yarn exec vitest run *": "allow",
+          "bun test *": "allow",
+          "npm test -- *": "allow",
+          "pnpm test -- *": "allow",
+          "yarn test *": "allow"
+        }
+      }
+    }
+  },
+  "mcp": {
+    "playwright": { "enabled": false },
+    "browsermcp": { "enabled": false },
+    "linear": { "enabled": false },
+    "figma": { "enabled": false },
+    "figwright": { "enabled": false },
+    "datadog": { "enabled": false },
+    "posthog": { "enabled": false }
+  },
+  "permission": {
+    "webfetch": "deny",
+    "websearch": "deny"
+  }
+}
