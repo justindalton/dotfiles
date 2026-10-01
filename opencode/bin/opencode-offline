@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config="${OPENCODE_OFFLINE_CONFIG:-$HOME/.config/opencode/offline.json}"
+
+if [[ ! -f "$config" ]]; then
+  printf 'opencode-offline: missing config: %s\nRun bin/install-opencode to link the offline profile.\n' "$config" >&2
+  exit 1
+fi
+
+if [[ "${OPENCODE_OFFLINE_SKIP_CHECK:-}" != 1 ]]; then
+  if ! models="$(curl -fsS -m 2 http://127.0.0.1:1234/v1/models 2>/dev/null)" ||
+    [[ "$models" != *qwen3.8-27b-mlx* ]]; then
+    printf '%s\n' \
+      'opencode-offline: LM Studio is not serving qwen3.8-27b-mlx.' \
+      'Start the model server with:' \
+      '  lms unload --all' \
+      '  lms load qwen3.8-27b-mlx --context-length 65536 --parallel 1' \
+      'For >40K context, first run: sudo sysctl iogpu.wired_limit_mb=42000, then raise limit.context in ~/.config/opencode/offline.json' \
+      '  lms server start' >&2
+    exit 1
+  fi
+fi
+
+export OPENCODE_CONFIG="$config" OPENCODE_PURE=1
+exec opencode "$@"
