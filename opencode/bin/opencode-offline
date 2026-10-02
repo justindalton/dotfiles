@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+model="${OPENCODE_OFFLINE_MODEL:-qwen3.8-27b-mlx@4bit}"
+ctx="${OPENCODE_OFFLINE_CTX:-65536}"
+ttl="${OPENCODE_OFFLINE_TTL:-900}"
+# offline.json still hardcodes the model id; OPENCODE_OFFLINE_MODEL only controls loading.
 config="${OPENCODE_OFFLINE_CONFIG:-$HOME/.config/opencode/offline.json}"
+
+die() { printf 'opencode-offline: %s\n' "$*" >&2; exit 1; }
 
 if [[ ! -f "$config" ]]; then
   printf 'opencode-offline: missing config: %s\nRun bin/install-opencode to link the offline profile.\n' "$config" >&2
@@ -9,16 +15,35 @@ if [[ ! -f "$config" ]]; then
 fi
 
 if [[ "${OPENCODE_OFFLINE_SKIP_CHECK:-}" != 1 ]]; then
-  if ! models="$(curl -fsS -m 2 http://127.0.0.1:1234/v1/models 2>/dev/null)" ||
-    [[ "$models" != *qwen3.8-27b-mlx* ]]; then
-    printf '%s\n' \
-      'opencode-offline: LM Studio is not serving qwen3.8-27b-mlx.' \
-      'Start the model server with:' \
-      '  lms unload --all' \
-      '  lms load qwen3.8-27b-mlx --context-length 65536 --parallel 1' \
-      'For >40K context, first run: sudo sysctl iogpu.wired_limit_mb=42000, then raise limit.context in ~/.config/opencode/offline.json' \
-      '  lms server start' >&2
-    exit 1
+  lms="$HOME/.lmstudio/bin/lms"
+  [[ -x "$lms" ]] || lms="$(command -v lms || true)"
+  [[ -n "$lms" && -x "$lms" ]] || die 'LM Studio CLI not found.'
+  if ! curl -fsS -m 2 http://127.0.0.1:1234/v1/models >/dev/null 2>&1; then
+    "$lms" server start || die 'failed to start LM Studio server.'
+  fi
+  command -v jq >/dev/null 2>&1 || die 'jq is required to inspect loaded models.'
+  if ! ps="$($lms ps --json 2>/dev/null)" || ! printf '%s' "$ps" | jq -e 'type == "array"' >/dev/null; then
+    die 'failed to inspect LM Studio models.'
+  fi
+  rows="$(printf '%s' "$ps" | jq -r '.[] | select(.type == "llm") | [(.identifier // .modelKey // ""), (.parallel // 0)] | @tsv')" || die 'failed to parse LM Studio models.'
+  loaded=0
+  parallel=0
+  while IFS=$'\t' read -r id count; do
+    [[ -n "$id" ]] || continue
+    if [[ "$id" == "$model" ]]; then
+      loaded=1
+      parallel="$count"
+    elif ! "$lms" unload "$id" >/dev/null; then
+      die "failed to unload model $id."
+    fi
+  done <<< "$rows"
+  if (( loaded && parallel != 1 )); then
+    "$lms" unload "$model" >/dev/null || die "failed to unload model $model."
+    loaded=0
+  fi
+  if (( ! loaded )); then
+    printf 'opencode-offline: loading %s (context %s, parallel 1, TTL %ss).\n' "$model" "$ctx" "$ttl" >&2
+    "$lms" load "$model" --context-length "$ctx" --parallel 1 --ttl "$ttl" -y >/dev/null || die "failed to load model $model."
   fi
 fi
 
