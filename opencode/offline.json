@@ -9,19 +9,19 @@
         "baseURL": "http://127.0.0.1:1234/v1"
       },
       "models": {
-        "qwen3.8-27b-mlx": {
-          "name": "Qwen 3.8 27B MLX",
+        "qwen3.8-27b-mlx@4bit": {
+          "name": "Qwen 3.8 27B MLX 4-bit",
           "tool_call": true,
           "limit": {
-            "context": 40960,
+            "context": 65536,
             "output": 8192
           }
         }
       }
     }
   },
-  "model": "lmstudio/qwen3.8-27b-mlx",
-  "small_model": "lmstudio/qwen3.8-27b-mlx",
+  "model": "lmstudio/qwen3.8-27b-mlx@4bit",
+  "small_model": "lmstudio/qwen3.8-27b-mlx@4bit",
   "default_agent": "local-orchestrate",
   "autoupdate": false,
   "share": "disabled",
@@ -29,16 +29,16 @@
     "auto": true,
     "prune": true,
     "tail_turns": 4,
-    "reserved": 10000
+    "reserved": 12000
   },
   "agent": {
-    "compaction": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "title": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "summary": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "explore": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "general": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "build": { "model": "lmstudio/qwen3.8-27b-mlx" },
-    "plan": { "model": "lmstudio/qwen3.8-27b-mlx" },
+    "compaction": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "title": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "summary": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "explore": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "general": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "build": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
+    "plan": { "model": "lmstudio/qwen3.8-27b-mlx@4bit" },
     "orchestrate": { "disable": true },
     "implement": { "disable": true },
     "implement-complex": { "disable": true },
@@ -51,7 +51,7 @@
       "description": "Coordinates local offline work and delegates scoped tasks to local agents.",
       "color": "#0F766E",
       "prompt": "{file:./offline/local-orchestrate.md}",
-      "model": "lmstudio/qwen3.8-27b-mlx",
+      "model": "lmstudio/qwen3.8-27b-mlx@4bit",
       "temperature": 1.0,
       "top_p": 0.95,
       "permission": {
@@ -82,7 +82,7 @@
       "description": "Performs concise, read-only repository discovery.",
       "color": "#4338CA",
       "prompt": "{file:./offline/local-explore.md}",
-      "model": "lmstudio/qwen3.8-27b-mlx",
+      "model": "lmstudio/qwen3.8-27b-mlx@4bit",
       "temperature": 1.0,
       "top_p": 0.95,
       "permission": {
@@ -107,7 +107,7 @@
       "description": "Implements only explicitly scoped offline tasks.",
       "color": "#15803D",
       "prompt": "{file:./offline/local-implement.md}",
-      "model": "lmstudio/qwen3.8-27b-mlx",
+      "model": "lmstudio/qwen3.8-27b-mlx@4bit",
       "temperature": 1.0,
       "top_p": 0.95,
       "steps": 30,
@@ -125,7 +125,7 @@
       "description": "Reviews diffs for actionable defects without editing files.",
       "color": "#BE185D",
       "prompt": "{file:./offline/local-review.md}",
-      "model": "lmstudio/qwen3.8-27b-mlx",
+      "model": "lmstudio/qwen3.8-27b-mlx@4bit",
       "temperature": 1.0,
       "top_p": 0.95,
       "permission": {
