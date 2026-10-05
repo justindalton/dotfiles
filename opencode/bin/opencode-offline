@@ -2,7 +2,7 @@
 set -euo pipefail
 
 model="${OPENCODE_OFFLINE_MODEL:-qwen3.8-27b-mlx@4bit}"
-ctx="${OPENCODE_OFFLINE_CTX:-65536}"
+ctx="${OPENCODE_OFFLINE_CTX:-116736}"
 ttl="${OPENCODE_OFFLINE_TTL:-900}"
 # offline.json still hardcodes the model id; OPENCODE_OFFLINE_MODEL only controls loading.
 config="${OPENCODE_OFFLINE_CONFIG:-$HOME/.config/opencode/offline.json}"
@@ -25,19 +25,21 @@ if [[ "${OPENCODE_OFFLINE_SKIP_CHECK:-}" != 1 ]]; then
   if ! ps="$($lms ps --json 2>/dev/null)" || ! printf '%s' "$ps" | jq -e 'type == "array"' >/dev/null; then
     die 'failed to inspect LM Studio models.'
   fi
-  rows="$(printf '%s' "$ps" | jq -r '.[] | select(.type == "llm") | [(.identifier // .modelKey // ""), (.parallel // 0)] | @tsv')" || die 'failed to parse LM Studio models.'
+  rows="$(printf '%s' "$ps" | jq -r '.[] | select(.type == "llm") | [(.identifier // .modelKey // ""), (.parallel // 0), (.contextLength // 0)] | @tsv')" || die 'failed to parse LM Studio models.'
   loaded=0
   parallel=0
-  while IFS=$'\t' read -r id count; do
+  context=0
+  while IFS=$'\t' read -r id count loaded_context; do
     [[ -n "$id" ]] || continue
     if [[ "$id" == "$model" ]]; then
       loaded=1
       parallel="$count"
+      context="$loaded_context"
     elif ! "$lms" unload "$id" >/dev/null; then
       die "failed to unload model $id."
     fi
   done <<< "$rows"
-  if (( loaded && parallel != 1 )); then
+  if (( loaded && (parallel != 1 || context < ctx) )); then
     "$lms" unload "$model" >/dev/null || die "failed to unload model $model."
     loaded=0
   fi
