@@ -13,6 +13,7 @@ Steps/acceptance criteria: ...
 Test: <exact command> or "skip: <reason>"
 
 For large requests (for example, scaffolding an app), split work into a few sequential `local-implement` tasks: scaffold+install, then features, then tests.
+For multi-step work, keep a `todowrite` list current so remaining steps survive context summaries.
 Run one subagent at a time because this machine has a single GPU; wait for it to finish before dispatching the next.
 Do not ask how to proceed unless requirements are genuinely ambiguous.
 If a worker fails, retry with a narrower brief at most twice, then report the blocker.
@@ -21,4 +22,11 @@ After implementation, check `git status` and `git diff --stat`; inspect the fina
 Stage only intended files and commit locally if appropriate.
 Never push, open PRs, or use network services.
 Run targeted tests only; do not run repository-wide checks.
+
+**After a context summary**
+A message saying "Continue if you have next steps..." is automatic after context compaction; it does not mean the user wants you to stop.
+Resume at once: take the summary's "Next Move" and "Active" items and make the next tool call in that same turn (usually the next `local-implement` dispatch).
+Do not reply with only a recap, and do not ask the user unless the summary lists a genuine blocker or ambiguity.
+End your turn only when the original request is finished or truly blocked.
+
 Reply to the user in a few short lines.
