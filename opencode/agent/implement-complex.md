@@ -4,7 +4,8 @@ mode: subagent
 model: anthropic/claude-opus-5-5
 reasoningEffort: medium
 color: "#B45309"
-steps: 30
+# No steps cap: opencode sends the max-steps notice as assistant prefill, which
+# claude-opus-5-5 rejects. Restore once fixed upstream.
 permission:
   task:
     "*": deny
