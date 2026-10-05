@@ -3,7 +3,7 @@ set -euo pipefail
 
 model="${OPENCODE_OFFLINE_MODEL:-qwen3.8-27b-mlx@4bit}"
 ctx="${OPENCODE_OFFLINE_CTX:-116736}"
-ttl="${OPENCODE_OFFLINE_TTL:-900}"
+ttl="${OPENCODE_OFFLINE_TTL:-}"
 # offline.json still hardcodes the model id; OPENCODE_OFFLINE_MODEL only controls loading.
 config="${OPENCODE_OFFLINE_CONFIG:-$HOME/.config/opencode/offline.json}"
 
@@ -18,6 +18,37 @@ if [[ "${OPENCODE_OFFLINE_SKIP_CHECK:-}" != 1 ]]; then
   lms="$HOME/.lmstudio/bin/lms"
   [[ -x "$lms" ]] || lms="$(command -v lms || true)"
   [[ -n "$lms" && -x "$lms" ]] || die 'LM Studio CLI not found.'
+  sessions="${XDG_CACHE_HOME:-$HOME/.cache}/opencode-offline/sessions"
+  mkdir -p "$sessions" || die "failed to create sessions directory: $sessions"
+  session_file="$sessions/$$"
+  prune_sessions() {
+    for pidfile in "$sessions"/*; do
+      [[ -e "$pidfile" ]] || continue
+      pid="${pidfile##*/}"
+      if [[ "$pid" =~ ^[0-9]+$ ]] && ! kill -0 "$pid" 2>/dev/null; then
+        rm -f "$pidfile" 2>/dev/null || true
+      fi
+    done
+  }
+  # Invoked by the EXIT trap below.
+  # shellcheck disable=SC2329
+  cleanup() {
+    local status=$?
+    trap - EXIT HUP INT TERM
+    set +e
+    rm -f "$session_file" >/dev/null 2>&1
+    prune_sessions >/dev/null 2>&1
+    if ! compgen -G "$sessions/[0-9]*" >/dev/null; then
+      "$lms" unload "$model" >/dev/null 2>&1 || true
+    fi
+    exit "$status"
+  }
+  prune_sessions
+  : > "$session_file" || die "failed to register session: $session_file"
+  trap cleanup EXIT
+  trap 'exit 129' HUP
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
   if ! curl -fsS -m 2 http://127.0.0.1:1234/v1/models >/dev/null 2>&1; then
     "$lms" server start || die 'failed to start LM Studio server.'
   fi
@@ -44,10 +75,18 @@ if [[ "${OPENCODE_OFFLINE_SKIP_CHECK:-}" != 1 ]]; then
     loaded=0
   fi
   if (( ! loaded )); then
-    printf 'opencode-offline: loading %s (context %s, parallel 1, TTL %ss).\n' "$model" "$ctx" "$ttl" >&2
-    "$lms" load "$model" --context-length "$ctx" --parallel 1 --ttl "$ttl" -y >/dev/null || die "failed to load model $model."
+    load_details="context $ctx, parallel 1"
+    load_args=(--context-length "$ctx" --parallel 1)
+    if [[ -n "$ttl" ]]; then
+      load_details+=", TTL ${ttl}s"
+      load_args+=(--ttl "$ttl")
+    fi
+    printf 'opencode-offline: loading %s (%s).\n' "$model" "$load_details" >&2
+    "$lms" load "$model" "${load_args[@]}" -y >/dev/null || die "failed to load model $model."
   fi
 fi
 
 export OPENCODE_CONFIG="$config" OPENCODE_PURE=1
-exec opencode "$@"
+status=0
+opencode "$@" || status=$?
+exit "$status"
