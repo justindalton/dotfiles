@@ -71,6 +71,7 @@
           "git add *": "allow",
           "git commit*": "allow",
           "git rev-parse*": "allow",
+          "curl *": "allow",
           "git push*": "deny"
         },
         "todowrite": "allow",
