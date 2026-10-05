@@ -190,6 +190,11 @@ otherwise dispatch none. Never use `verify` or `review` for this task. Implement
 all waves before the final checkpoint. On blocker/failure, send the report to
 `implement` for a narrowly scoped fix; escalate a repeated same-unit failure to
 `implement-complex`. Do not fix it yourself or use a non-implementation agent.
+A harness/provider error (API error, prefill rejection, timeout) is not a task
+failure. Before redispatch, inspect the worker's partial changes in its `Owns:`
+paths and brief the follow-up from that state. Retry a transient error once, but
+never repeat an identical deterministic error or de-escalate to a weaker worker
+to route around it; report it to the user as a blocker.
 
 After implementation, deferred validation, and reconciliation, inspect status
 and scoped diff, stage only intended files, and commit. Before publication, read
