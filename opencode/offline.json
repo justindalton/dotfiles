@@ -62,18 +62,6 @@
           "local-implement": "allow",
           "local-review": "allow"
         },
-        "bash": {
-          "*": "deny",
-          "git status*": "allow",
-          "git diff*": "allow",
-          "git log*": "allow",
-          "git show*": "allow",
-          "git add *": "allow",
-          "git commit*": "allow",
-          "git rev-parse*": "allow",
-          "curl *": "allow",
-          "git push*": "deny"
-        },
         "todowrite": "allow",
         "question": "allow"
       }
