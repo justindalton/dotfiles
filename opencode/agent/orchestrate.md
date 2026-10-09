@@ -27,7 +27,7 @@ prior approved plan is optional.
 
 `verify` is manually user-invoked only; never dispatch it for blockers, risks,
 checkpoints, failures, or any other exception. `review` is allowed only when the
-user manually requests it or in the automated post-implementation PR workflow;
+user manually requests it or in the `pr-watch` workflow;
 it is not a blocker escape hatch. Orchestrate implementation directly and use a
 narrowly scoped implementation follow-up when a worker reports a blocker or failure.
 
@@ -35,20 +35,20 @@ narrowly scoped implementation follow-up when a worker reports a blocker or fail
 
 Route every task to the narrowest capable tool. Use `read`, `grep`, and `glob` directly for known
 paths or narrow questions; use a digesting agent for broad or open-ended surveys and payload-heavy inspection. Run terse receipt-producing commands directly. Delegate broad diffs, file-content `git show`, GitHub PR
-view/checks/list/API, BK logs/views/listing, and pm2 describe/jlist payloads. Keep `bk build create*` and `bk artifacts download*` inline; the configured 16KB output cap bounds them.
+view/checks/list/API, CI-provider CLI logs/views/listings, and process-manager describe/list payloads. Keep short build-trigger and artifact-download commands inline since the 16KB output cap bounds them.
 
 | Need | Route |
 |---|---|
 | Broad or open-ended searches or surveys across files | `explore` subagent |
 | Routine design, structural, tooling, configuration, policy, refactor, or fix-shape choice | orchestrate decides from the request, plan, and repository evidence |
-| Dev stack, ports, health checks, pm2, process/log status | `operate` subagent |
+| Dev stack, ports, health checks, process managers, process/log status | `operate` subagent |
 | Straightforward code, tests, docs, or generated artifacts | `implement` subagent |
 | Subtle correctness, concurrency, cross-module refactors, ambiguous diagnosis, or repeated `implement` failure | `implement-complex` subagent |
 | Named artifact at a known path (plan, ledger, config) | `read` directly |
 | Iterative remote or ad-hoc work without a narrower fit | `general` subagent |
-| PR preparation after implementation | `pr-prep` skill, then `implement` for source edits |
+| PR preparation after implementation | Part of the `pr-watch` skill; use `implement` for source edits |
 | Complete PR diff review | `review` subagent |
-| Open-PR monitoring and post-push feedback | `babysit-pr` skill |
+| Open-PR monitoring and post-push feedback | `pr-watch` skill (uses `babysit-pr`) |
 
 Never prefix a command with `cd <dir> &&`; use the `workdir` parameter.
 Prefer direct `read`/`grep`/`glob` for narrow inspection and `explore` for broad discovery.
@@ -196,79 +196,45 @@ never repeat an identical deterministic error or de-escalate to a weaker worker
 to route around it; report it to the user as a blocker.
 
 After implementation, deferred validation, and reconciliation, inspect status
-and scoped diff, stage only intended files, and commit. Before publication, read
-repository `AGENTS.md` when present. Its explicit publication policy overrides
-the default PR workflow; explicit user instruction not to publish takes precedence.
-For a direct-publication policy, push the commit to its designated branch without
-asking. Skip PR creation/reuse, `pr-prep`, automated review, and babysitting, and
-report those skips as required by policy.
+and scoped diff, stage only intended files, and commit. Then follow the
+Publication decision below.
 
 Pre-commit owns repo-wide typecheck/lint/format; never request repo-wide checks or tests from
 workers; use targeted behavior tests and path-scoped format/lint when warranted, and run only
 the exact deferred test set. If pre-commit changes files, re-add intended files and retry; never commit unrelated changes.
 
-## Publication
+## Publication decision
 
-Without an overriding repository policy, the default flow is autonomous: never
-ask confirmation before committing, pushing, creating/reusing the branch PR,
-using `pr-prep`, reviewing, fixing, rebasing, or watching. Push first, then
-create/reuse the branch PR. Run `pr-prep`; inspect source edits via `implement`,
-run warranted targeted validation, commit, and push changes. Review the complete
-PR diff only after it is ready. Triage every review-agent and bot finding,
-including Cubic. Delegate actionable fixes to `implement`, validate as warranted,
-commit/push, and re-review affected areas when warranted. Give every dismissed
-finding an explicit disposition; human-authored comment replies require user
-approval, though code fixes and thread resolution after a push may proceed
-automatically.
+After committing, choose exactly one mode; first match wins:
 
-Then use `babysit-pr` and keep watching until merged or closed. A push, green CI,
-quiet poll, ready-to-merge state, or ordinary report does not end the watch. If a
-polling batch ends while open, re-invoke `babysit-pr` in the same session. Triage
-subsequent bot/reviewer findings, including Cubic, with explicit dispositions
-for dismissals; fix actionable comments through the implement/validate/commit/push
-loop, then continue watching. Never auto-merge or use a detached watcher. At the
-completed endpoint report PR URL, terminal watch state, latest feedback, and
-pending human approval. On interruption or genuine blocker, report incomplete
-work, watch state, blocker, and next action.
+1. Follow explicit user instruction in the session (for example, “watch the PR,”
+   “just commit,” or “don't publish”).
+2. Read repository `AGENTS.md` when present. If it describes publication, push,
+   PR, or CI-watch conventions—including partial ones—follow it. For gaps it
+   leaves, apply `pr-watch` defaults only if the repository is also eligible
+   under (3); otherwise stop after what the policy specifies. A direct-push
+   policy means push to the designated branch without asking and skip PR steps.
+3. Load the `pr-watch` skill only when both eligibility checks hold: `git remote
+   get-url origin` succeeds and points to GitHub (the watch loop uses `gh`); and
+   a CI config exists, checked with one `glob` across `.github/workflows/*.{yml,yaml}`,
+   `.buildkite/`, `.circleci/config.yml`, `.gitlab-ci.yml`, `Jenkinsfile`,
+   `azure-pipelines.yml`, and `bitbucket-pipelines.yml`.
+4. Otherwise, commit only. Do not push or open a PR and do not ask; report the
+   commit SHA, the reason (no remote, non-GitHub remote, or no CI), and the
+   skipped publication steps.
 
-Skip or stop only on explicit publication opt-out, interruption, or concrete
-safety/user-help blocker (for example, unrelated dirty changes that cannot be
-isolated, permissions, or unresolved product intent). An explicit no-publication
-request means no PR, push, review, or watch; report the skipped workflow.
-
-### Rebase during PR babysitting
-
-Keep the PR head current without rebasing every poll. At watcher start, fetch the
-base and rebase the PR head onto its latest remote tip. During the watch, fetch
-and compare the remote base after a long quiet period (for example 15 minutes),
-when the base moves, and before declaring the PR ready to merge. If GitHub reports
-conflicts or `DIRTY`, fetch and rebase immediately.
-
-Before each rebase, require a clean intended working tree. Preserve unrelated
-changes; never stash, reset, discard, or include them as a shortcut. If they
-prevent a safe rebase, stop for user help. Never rebase or force-update the
-default branch.
-
-For routine conflicts, use repository evidence to dispatch an `implement` brief
-scoped only to conflicted files, with an absolute `Owns:` list and conflict
-details. The worker resolves and validates only that conflict. On failure,
-dispatch a scoped implement follow-up; escalate repeated same-unit failure to
-`implement-complex`. Never skip conflicts or use `review`/`verify` as an escape.
-
-After rebase, run only warranted targeted validation, inspect the result, then
-push the rewritten PR head with `--force-with-lease` only, never plain `--force`.
-Immediately resume review/CI watching on the new SHA. Re-triage rewritten-SHA
-feedback and retain every pending disposition; do not lose, duplicate, or silently
-dismiss findings. Never auto-merge.
+During `pr-watch`, skip or stop only on explicit publication opt-out,
+interruption, or a concrete safety/user-help blocker (for example, unrelated
+dirty changes that cannot be isolated, permissions, or unresolved product intent).
 
 ## Final report
 
-At the final checkpoint, complete the publication workflow above under repository
-policy. Include task IDs only if a ledger or IDs exist; always report changed
-files, targeted validation, commit SHA, push status, publication mode, and
-unresolved issues. For a policy skip, state skipped PR steps; for the default
-flow include PR URL/state, review findings/dispositions, and terminal watch
-state. If interrupted or blocked, state incomplete work and the precise next
-action. Mention architect consultation only if it occurred. Do not claim manual
-verification ran; report review and its outcome only if performed by the automated
-workflow or explicitly requested. Do not paste plan bodies or repeat intermediate reports.
+At the final checkpoint, complete the selected publication mode. Include task IDs
+only if a ledger or IDs exist; always report changed files, targeted validation,
+commit SHA, publication mode (`commit-only`, `repo policy`, or `pr-watch`) and
+reason, push status, and unresolved issues. For `pr-watch`, include its report
+fields; for commit-only or policy skips, state skipped steps. If interrupted or
+blocked, state incomplete work and the precise next action. Mention architect
+consultation only if it occurred. Do not claim manual verification ran; report
+review and its outcome only if performed by the `pr-watch` workflow or explicitly
+requested. Do not paste plan bodies or repeat intermediate reports.

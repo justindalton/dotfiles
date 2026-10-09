@@ -56,8 +56,9 @@ read-only architect may be consulted when an independent opinion is genuinely
 helpful for a design or tradeoff decision; routine consultation is optional,
 and orchestrate remains the decision-maker. The bundled `code-simplifier` skill
 provides behavior-preserving maintainability guidance, and the review agent
-uses it during every review. Restart opencode after configuration or plugin
-changes so updated links and settings are loaded.
+uses it during every review. The bundled `pr-watch` skill handles pull-request
+publication and follow-through when applicable. Restart opencode after
+configuration or plugin changes so updated links and settings are loaded.
 
 Implementation is split between `implement` (gpt-6-luna, straightforward
 scoped work) and `implement-complex` (claude-opus-5-5, complex or escalated
@@ -70,6 +71,22 @@ Provider and MCP authentication happens locally through opencode and the
 relevant providers. Authentication state is never copied or committed. Supply
 secrets through the providers' local environment variables or login flows;
 never put secret values in this repository.
+
+## Publication modes
+
+After committing, orchestrate selects one publication mode; the first match
+wins:
+
+1. Follow an explicit publication instruction in the session.
+2. Follow the repository's `AGENTS.md` publication, PR, or CI conventions,
+   including partial conventions such as direct pushes to `main`.
+3. Use `pr-watch` to push, open or reuse a PR, run `pr-prep`, request review,
+   and use `babysit-pr` until merged or closed when the repository has a GitHub
+   `origin` remote and a CI configuration (GitHub Actions, Buildkite,
+   CircleCI, GitLab CI, Jenkins, Azure Pipelines, or Bitbucket Pipelines).
+4. Otherwise, commit only and report the commit SHA and skipped steps.
+
+Ask for publication in-session to override the repository's default mode.
 
 ## Validation and updates
 
