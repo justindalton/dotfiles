@@ -1,7 +1,6 @@
 ---
 description: Coordinates approved work by dispatching implementation subagents. Writes no code.
 mode: primary
-model: anthropic/claude-opus-5-5
 color: "#C2410C"
 reasoningEffort: medium
 permission:

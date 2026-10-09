@@ -15,6 +15,7 @@ mkdir -p "$destination"
 items=(
   opencode.json
   offline.json
+  zen.json
   opencode-tools.json
   tui.jsonc
   herdr-tui-session.js

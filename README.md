@@ -17,7 +17,7 @@ cd ~/code/dotfiles
 ```
 
 The installer creates `$HOME/.config/opencode` and links these tracked items
-individually: `opencode.json`, `opencode-tools.json`, `tui.jsonc`,
+individually: `opencode.json`, `opencode-tools.json`, `tui.jsonc`, `zen.json`,
 `herdr-tui-session.js`, `agent/`, `command/`, `plugins/`, and `bin/`. Existing
 generated runtime files such as `node_modules` and `figwright-plugin` are left
 alone.
@@ -38,6 +38,18 @@ full-tool session, launch opencode with the overlay that re-enables its MCPs:
 ```sh
 OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
 ```
+
+## OpenCode Zen profile
+
+The default profile uses direct Anthropic and OpenAI providers. Run
+`~/.config/opencode/bin/opencode-zen` to use the same agents through OpenCode
+Zen with identical model IDs. Authenticate once with `opencode auth login`
+(choose OpenCode Zen), or set `OPENCODE_API_KEY`. For convenience, add
+`alias ocz="$HOME/.config/opencode/bin/opencode-zen"` to your shell.
+
+Agent models live in `opencode.json` under `agent.<name>.model`, not in agent
+frontmatter, so overlays can remap them. When changing an agent's model, update
+both `opencode.json` and `zen.json`.
 
 The Sol agents remain available for review and architecture decisions. The
 read-only architect may be consulted when an independent opinion is genuinely
