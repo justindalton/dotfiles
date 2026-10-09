@@ -1,7 +1,6 @@
 ---
 description: Gives read-only second opinions when orchestrate finds an independent architecture opinion genuinely helpful.
 mode: subagent
-model: openai/gpt-6-astra
 color: "#7C3AED"
 textVerbosity: low
 permission:

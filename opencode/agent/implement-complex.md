@@ -1,7 +1,6 @@
 ---
 description: "Implements assigned tasks needing deeper reasoning: subtle correctness, concurrency, cross-module refactors, ambiguous failure diagnosis, or repeated implement failures."
 mode: subagent
-model: anthropic/claude-opus-5-5
 reasoningEffort: medium
 color: "#B45309"
 # No steps cap: opencode sends the max-steps notice as assistant prefill, which

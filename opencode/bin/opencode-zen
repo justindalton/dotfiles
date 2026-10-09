@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config="${OPENCODE_ZEN_CONFIG:-$HOME/.config/opencode/zen.json}"
+if [[ ! -f "$config" ]]; then
+  printf 'opencode-zen: missing config: %s\nRun bin/install-opencode to link the Zen profile.\n' "$config" >&2
+  exit 1
+fi
+
+# OPENCODE_CONFIG holds one overlay, so this replaces opencode-tools.json for this session.
+export OPENCODE_CONFIG="$config"
+exec opencode "$@"

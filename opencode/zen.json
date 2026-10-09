@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["opencode"],
+  "provider": {
+    "opencode": {
+      "options": { "setCacheKey": true },
+      "models": {
+        "claude-opus-5-5": { "limit": { "context": 1000000, "input": 922000, "output": 128000 } }
+      }
+    }
+  },
+  "small_model": "opencode/gpt-5.4-nano",
+  "agent": {
+    "plan": { "model": "opencode/claude-opus-5-5" },
+    "build": { "model": "opencode/gpt-6-luna" },
+    "general": { "model": "opencode/gpt-6-luna" },
+    "explore": { "model": "opencode/gpt-6-luna" },
+    "compaction": { "model": "opencode/gpt-6-luna" },
+    "orchestrate": { "model": "opencode/claude-opus-5-5" },
+    "implement": { "model": "opencode/gpt-6-luna" },
+    "implement-complex": { "model": "opencode/claude-opus-5-5" },
+    "architect": { "model": "opencode/gpt-6-astra" },
+    "review": { "model": "opencode/gpt-6-sol" },
+    "operate": { "model": "opencode/gpt-6-luna" },
+    "verify": { "model": "opencode/gpt-6-luna" }
+  }
+}
