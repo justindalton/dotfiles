@@ -13,7 +13,7 @@ Live `~/.local/share/opencode/opencode.db` telemetry over the trailing 7-day win
 Root causes identified:
 
 1. Sonnet defaults to bash over subagents.
-2. `bash: {"*": "deny"}` blocked all dev-stack/process visibility (pm2, curl health checks, herdr, lsof) that the `mutiny-frontend-run-and-operate` skill instructs it to use, causing fallback to the unrestricted `general` subagent (16 dispatches versus implement's 6 on Sep 8).
+2. `bash: {"*": "deny"}` blocked all dev-stack/process visibility (process managers, curl health checks, herdr, lsof) that a repo-specific run/operate skill instructs it to use, causing fallback to the unrestricted `general` subagent (16 dispatches versus implement's 6 on Sep 8).
 3. `textVerbosity: low` is an OpenAI-specific knob with no effect on Anthropic models.
 
 ## Decision
