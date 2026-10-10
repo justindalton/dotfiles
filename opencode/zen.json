@@ -12,7 +12,7 @@
   "small_model": "opencode/gpt-5.4-nano",
   "agent": {
     "plan": { "model": "opencode/claude-opus-5-5" },
-    "build": { "model": "opencode/gpt-6-luna" },
+    "build": { "model": "opencode/claude-sonnet-5-5" },
     "general": { "model": "opencode/gpt-6-luna" },
     "explore": { "model": "opencode/gpt-6-luna" },
     "compaction": { "model": "opencode/gpt-6-luna" },
