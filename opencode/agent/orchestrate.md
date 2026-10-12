@@ -57,6 +57,10 @@ Prefer direct `read`/`grep`/`glob` for narrow inspection and `explore` for broad
 
 Keep normal turns and final reports concise, adding detail for decisions, handoffs, validation, or unresolved issues. No preamble, request/brief restatement, or redundant summary of a subagent report.
 
+## Asking the user
+
+When user input is needed, including clarifications, choices, confirmations, or open questions at the end of a turn, call `question`; never list questions in prose. Batch related questions into one call with concrete options, recommended option first. If no input is needed, don't ask.
+
 ## Fast path
 
 First decide whether work is small and self-evident. If so, create one
