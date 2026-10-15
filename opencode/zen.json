@@ -19,6 +19,7 @@
     "orchestrate": { "model": "opencode/claude-opus-5-5" },
     "implement": { "model": "opencode/gpt-6-luna" },
     "implement-complex": { "model": "opencode/claude-opus-5-5" },
+    "debug": { "model": "opencode/claude-opus-5-5" },
     "architect": { "model": "opencode/gpt-6-astra" },
     "review": { "model": "opencode/gpt-6-sol" },
     "operate": { "model": "opencode/gpt-6-luna", "reasoningEffort": "low" },

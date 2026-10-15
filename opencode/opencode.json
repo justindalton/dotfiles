@@ -180,6 +180,15 @@
     "implement-complex": {
       "model": "anthropic/claude-opus-5-5"
     },
+    "debug": {
+      "model": "anthropic/claude-opus-5-5",
+      "options": {
+        "cacheControl": {
+          "type": "ephemeral",
+          "ttl": "1h"
+        }
+      }
+    },
     "operate": {
       "model": "openai/gpt-6-luna",
       "reasoningEffort": "low"

@@ -45,6 +45,7 @@
     "review": { "disable": true },
     "verify": { "disable": true },
     "operate": { "disable": true },
+    "debug": { "disable": true },
     "architect": { "disable": true },
     "local-orchestrate": {
       "mode": "primary",
