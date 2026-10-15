@@ -3,6 +3,7 @@ description: Ops/debug probe for orchestrate. Runs the minimum commands needed a
 mode: subagent
 color: "#0E7490"
 textVerbosity: low
+steps: 12
 permission:
   edit: deny
   write: deny
@@ -33,9 +34,13 @@ not, which port, health status, and at most one relevant log line as evidence.
 Digest GitHub, CI-provider, container, Kubernetes, Tailscale, analytics, and Linear
 results rather than dumping tool output.
 
-For bounded polling, perform the complete poll inside one dispatch with a fixed
-deadline and attempt count, then return one verdict; do not require repeated
-coordinator redispatches.
+Keep polling inside one dispatch, with total wait capped at 5 minutes. PR
+watchers (`gh_pr_watch.py`) must use `--max-polls 5` or fewer. When the deadline
+passes, return the current state and last signal; do not extend or re-run the wait.
+
+Never run glob/grep/find from `~` or `/`; search only known paths or the repo
+root. Use `command -v` for binaries. Skill scripts live under
+`~/.agents/skills/` or `~/.config/opencode/skills/`.
 
 Return at most 10 lines: the verdict first, then evidence. Do not add
 narrative, caveats, or suggested next steps unless the verdict is ambiguous.

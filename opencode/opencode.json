@@ -181,7 +181,8 @@
       "model": "anthropic/claude-opus-5-5"
     },
     "operate": {
-      "model": "openai/gpt-6-luna"
+      "model": "openai/gpt-6-luna",
+      "reasoningEffort": "low"
     },
     "review": {
       "model": "openai/gpt-6-sol"
