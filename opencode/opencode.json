@@ -10,7 +10,7 @@
     "auto": true,
     "tail_turns": 8,
     "prune": true,
-    "reserved": 772000
+    "reserved": 422000
   },
   "provider": {
     "anthropic": {
