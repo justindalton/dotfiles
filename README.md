@@ -51,18 +51,19 @@ Agent models live in `opencode.json` under `agent.<name>.model`, not in agent
 frontmatter, so overlays can remap them. When changing an agent's model, update
 both `opencode.json` and `zen.json`.
 
-The Sol agents remain available for review and architecture decisions. The
-read-only architect may be consulted when an independent opinion is genuinely
-helpful for a design or tradeoff decision; routine consultation is optional,
-and orchestrate remains the decision-maker. The bundled `code-simplifier` skill
-provides behavior-preserving maintainability guidance, and the review agent
-uses it during every review. The bundled `pr-watch` skill handles pull-request
-publication and follow-through when applicable. Restart opencode after
-configuration or plugin changes so updated links and settings are loaded.
+The review and architect agents remain available for review and architecture
+decisions. The read-only architect may be consulted when an independent opinion
+is genuinely helpful for a design or tradeoff decision; routine consultation
+is optional, and orchestrate remains the decision-maker. The bundled
+`code-simplifier` skill provides behavior-preserving maintainability guidance,
+and the review agent uses it during every review. The bundled `pr-watch` skill
+handles pull-request publication and follow-through when applicable. Restart
+opencode after configuration or plugin changes so updated links and settings
+are loaded.
 
-Implementation is split between `implement` (gpt-6-luna, straightforward
-scoped work) and `implement-complex` (claude-opus-5-5, complex or escalated
-work), selected per brief by orchestrate.
+Implementation is split between `implement` (straightforward scoped work) and
+`implement-complex` (complex or escalated work), selected per brief by
+orchestrate.
 
 The installer is idempotent, but refuses to replace any existing non-matching
 file, directory, or symlink. Resolve conflicts manually and run it again.

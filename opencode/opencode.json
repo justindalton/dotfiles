@@ -194,7 +194,8 @@
       "reasoningEffort": "low"
     },
     "review": {
-      "model": "openai/gpt-6-sol"
+      "model": "openai/gpt-6-astra",
+      "reasoningEffort": "high"
     },
     "verify": {
       "model": "openai/gpt-6-luna"
