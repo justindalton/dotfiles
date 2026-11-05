@@ -406,6 +406,7 @@ async function tui(api) {
 function setup(api) {
   if (process.env.HERDR_ENV !== "1" || !process.env.HERDR_SOCKET_PATH || !process.env.HERDR_PANE_ID) return;
 
+  // Local dotfiles patch over herdr integration v13; a herdr reinstall overwrites this.
   let disposed = false;
   let selected;
   let generation = 0;
@@ -413,9 +414,15 @@ function setup(api) {
   let chain = Promise.resolve();
   let retryIndex = 0;
   let nextSelectionAt = 0;
-  let state = "idle";
+  let failed = false;
   let retryTimer;
   const sessions = new Map();
+  const runningSessions = new Set();
+  const sessionChanges = new Map();
+  const runningShells = new Map();
+  const shellChanges = new Map();
+  let shellSyncRequested = false;
+  let lastPublishedState;
   let blockers = new Map();
   // Event callbacks may precede cache updates. Retain each delta until the
   // cache reflects it, so late hydration cannot undo a reply or lose an ask.
@@ -457,13 +464,104 @@ function setup(api) {
     if (disposed || retryTimer) return;
     retryTimer = setTimeout(() => {
       retryTimer = undefined;
-      publish();
+      publish(true);
     }, 500);
     retryTimer.unref?.();
   }
 
-  function publish() {
-    enqueue(blockers.size ? "blocked" : state);
+  function publish(force = false) {
+    const value = blockers.size ? "blocked" :
+      runningSessions.size || runningShells.size ? "working" : failed ? "blocked" : "idle";
+    if (!force && value === lastPublishedState) return;
+    lastPublishedState = value;
+    enqueue(value);
+  }
+
+  function reconcileRunningSessions() {
+    const members = new Set([selected, ...(api.data.session.family(selected) ?? []), ...sessionChanges.keys()]);
+    const next = new Set();
+    const statuses = new Map();
+    for (const member of members) {
+      if (typeof member !== "string" || root(member) !== selected) continue;
+      const status = api.data.session.status(member);
+      statuses.set(member, status);
+      if (status === "running") next.add(member);
+    }
+    for (const [id, running] of sessionChanges) {
+      const status = statuses.get(id);
+      const reflected = running ? status === "running" : status !== undefined && status !== "running";
+      // Keep event deltas until the session cache reflects them.
+      if (reflected) sessionChanges.delete(id);
+      if (root(id) !== selected) continue;
+      if (running) next.add(id);
+      else next.delete(id);
+    }
+    runningSessions.clear();
+    for (const id of next) runningSessions.add(id);
+  }
+
+  function shellLocation() {
+    try {
+      return api.location ?? api.data.location.default();
+    } catch {
+      return undefined;
+    }
+  }
+
+  function shellInfo(data) {
+    return data?.shell ?? data?.info ?? data;
+  }
+
+  function shellID(data, info = shellInfo(data)) {
+    const id = data?.id ?? data?.shellID ?? info?.id;
+    return typeof id === "string" ? id : undefined;
+  }
+
+  function shellOwner(data, info = shellInfo(data)) {
+    const owner = info?.metadata?.sessionID ?? data?.sessionID;
+    return typeof owner === "string" ? owner : undefined;
+  }
+
+  function reconcileRunningShells() {
+    const location = shellLocation();
+    let shells;
+    try {
+      shells = api.data.shell.list(location);
+    } catch {
+      shells = undefined;
+    }
+    if (shells === undefined) {
+      if (!shellSyncRequested) {
+        shellSyncRequested = true;
+        try {
+          Promise.resolve(api.data.shell.sync(location)).then(() => {
+            if (!disposed && selected) syncSelection();
+          }).catch(() => {});
+        } catch {}
+      }
+      return;
+    }
+    const next = new Map();
+    for (const shell of Array.isArray(shells) ? shells : []) {
+      const info = shellInfo(shell);
+      const id = shellID(shell, info);
+      const owner = shellOwner(shell, info);
+      if (id && info?.status === "running" && owner && root(owner) === selected) next.set(id, owner);
+    }
+    for (const [id, change] of shellChanges) {
+      const cachedOwner = next.get(id);
+      if (change.running && cachedOwner === change.owner) shellChanges.delete(id);
+      else if (!change.running && !cachedOwner) shellChanges.delete(id);
+      if (change.running && change.owner && root(change.owner) === selected) next.set(id, change.owner);
+      else if (!change.running) next.delete(id);
+    }
+    runningShells.clear();
+    for (const [id, owner] of next) runningShells.set(id, owner);
+  }
+
+  function reconcileRunning() {
+    reconcileRunningSessions();
+    reconcileRunningShells();
   }
 
   function changeBlocker(id, kind, requestID, present) {
@@ -516,18 +614,26 @@ function setup(api) {
       nextSelectionAt = 0;
       blockers.clear();
       blockerChanges.clear();
+      runningSessions.clear();
+      sessionChanges.clear();
+      runningShells.clear();
+      shellChanges.clear();
+      shellSyncRequested = false;
+      failed = false;
+      lastPublishedState = undefined;
       if (id) {
-        state = api.data.session.status(id) === "running" ? "working" : "idle";
+        reconcileRunning();
       }
     }
     if (!id) return;
+    reconcileRunning();
     const blockersChanged = reconcileBlockers();
     if (Date.now() < nextSelectionAt) {
       if (blockersChanged) publish();
       return;
     }
     enqueue(undefined);
-    publish();
+    publish(true);
     const delay = SELECTION_RETRY_DELAYS_MS[retryIndex++];
     nextSelectionAt = delay === undefined ? Number.POSITIVE_INFINITY : Date.now() + delay;
   }
@@ -553,6 +659,25 @@ function setup(api) {
       return;
     }
     syncSelection();
+    if (event.type.startsWith("shell.")) {
+      const info = shellInfo(data);
+      const id = shellID(data, info);
+      if (!id) return;
+      if (event.type === "shell.exited" || event.type === "shell.deleted" ||
+          (event.type !== "shell.created" && info?.status && info.status !== "running")) {
+        const owner = shellOwner(data, info) ?? runningShells.get(id) ?? shellChanges.get(id)?.owner;
+        if (owner && root(owner) === selected) shellChanges.set(id, { owner, running: false });
+        runningShells.delete(id);
+      } else if (event.type === "shell.created" || event.type === "shell.updated") {
+        const owner = shellOwner(data, info);
+        if ((info?.status === undefined || info.status === "running") && owner && root(owner) === selected) {
+          shellChanges.set(id, { owner, running: true });
+          runningShells.set(id, owner);
+        }
+      }
+      publish();
+      return;
+    }
     const id = event.type === "form.created" ? data.form.sessionID : data.sessionID;
     if (!selected || root(id) !== selected) return;
     switch (event.type) {
@@ -570,17 +695,19 @@ function setup(api) {
         changeBlocker(id, "form", data.id, false);
         break;
       case "session.execution.started":
-        if (id !== selected) return;
-        state = "working";
+        sessionChanges.set(id, true);
+        runningSessions.add(id);
+        if (id === selected) failed = false;
         break;
       case "session.execution.succeeded":
       case "session.execution.interrupted":
-        if (id !== selected) return;
-        state = "idle";
+        sessionChanges.set(id, false);
+        runningSessions.delete(id);
         break;
       case "session.execution.failed":
-        if (id !== selected) return;
-        state = "blocked";
+        sessionChanges.set(id, false);
+        runningSessions.delete(id);
+        if (id === selected) failed = true;
         break;
       default:
         return;
@@ -598,6 +725,13 @@ function setup(api) {
     clearInterval(poll);
     unsubscribe();
     sessions.clear();
+    runningSessions.clear();
+    sessionChanges.clear();
+    runningShells.clear();
+    shellChanges.clear();
+    shellSyncRequested = false;
+    failed = false;
+    lastPublishedState = undefined;
     blockers.clear();
     blockerChanges.clear();
   };
