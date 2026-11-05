@@ -2,8 +2,7 @@
 description: "Implements assigned tasks needing deeper reasoning: subtle correctness, concurrency, cross-module refactors, ambiguous failure diagnosis, or repeated implement failures."
 mode: subagent
 color: "#B45309"
-# No steps cap: opencode sends the max-steps notice as assistant prefill, which
-# claude-opus-5-5 rejects. Restore once fixed upstream.
+steps: 25
 permissions:
   - action: subagent
     resource: "*"
@@ -39,10 +38,10 @@ tests, changing meaningful behavior, fixing a regression, or facing material
 correctness risk. Skip tests for mechanical edits and intermediate steps covered
 by a later dependent task; consolidate overlapping tests at the end of a wave.
 Follow the brief's test request unless it would repeat overlapping validation
-without justification. Run targeted formatting/lint on changed paths when
-needed, including oxfmt. Do not run repo-wide typecheck, lint, formatting, or
-tests; pre-commit owns those checks. Report tests run or why they were skipped
-or deferred.
+without justification. Run targeted lint on changed paths when needed; OpenCode
+formats edited files automatically. Do not run repo-wide typecheck, lint,
+formatting, or tests; pre-commit owns those checks. Report tests run or why they
+were skipped or deferred.
 
 Delegation is limited to narrowly scoped, read-only discovery or operational
 investigation through allowed helper agents. Use only non-overlapping support;

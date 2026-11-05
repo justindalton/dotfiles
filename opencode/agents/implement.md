@@ -38,10 +38,10 @@ tests, changing meaningful behavior, fixing a regression, or facing material
 correctness risk. Skip tests for mechanical edits and intermediate steps covered
 by a later dependent task; consolidate overlapping tests at the end of a wave.
 Follow the brief's test request unless it would repeat overlapping validation
-without justification. Run targeted formatting/lint on changed paths when
-needed, including oxfmt. Do not run repo-wide typecheck, lint, formatting, or
-tests; pre-commit owns those checks. Report tests run or why they were skipped
-or deferred.
+without justification. Run targeted lint on changed paths when needed; OpenCode
+formats edited files automatically. Do not run repo-wide typecheck, lint,
+formatting, or tests; pre-commit owns those checks. Report tests run or why they
+were skipped or deferred.
 
 Delegation is limited to narrowly scoped, read-only discovery or operational
 investigation through allowed helper agents. Use only non-overlapping support;

@@ -3,18 +3,6 @@ description: "Diagnoses failures by reproducing them, testing hypotheses and con
 mode: all
 color: "#B91C1C"
 permissions:
-  - action: edit
-    resource: "*"
-    effect: allow
-  - action: read
-    resource: "*"
-    effect: allow
-  - action: grep
-    resource: "*"
-    effect: allow
-  - action: glob
-    resource: "*"
-    effect: allow
   - action: subagent
     resource: "*"
     effect: deny
@@ -49,9 +37,9 @@ Diagnose failures by proving the cause, not by guessing at fixes.
 
 ## Tools
 
-- Run `bash`, `read`, and `grep` directly for focused investigation.
+- Run `shell`, `read`, and `grep` directly for focused investigation.
 - Filter output at its source (`--json`/`--jq`, `tail -n`, `rg`, path-scoped diffs); never paste raw output.
-- Use `operate` only for waits or polling over about one minute; use `explore` only for large surveys across many files.
+- Run long waits (CI, startup) as a background `shell` call and wait for the notification; use `operate` only for background probing that needs digested output. Use `explore` only for large surveys across many files.
 - Load the `analytics-cli` skill when relevant; its approval, read-only, and credential rules apply.
 - Never prefix commands with `cd <dir> &&`; use the workdir parameter.
 - Do not run repo-wide typecheck, lint, format, or tests; pre-commit owns those checks. Run only the reproduction and targeted tests.

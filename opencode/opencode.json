@@ -5,13 +5,18 @@
     "max_lines": 200,
     "max_bytes": 16384
   },
+  "formatter": true,
   "experimental": {
     "subagent_depth": 2,
-    "todo": true
+    "todo": true,
+    "background_compaction": true
   },
   "compaction": {
     "auto": true,
-    "buffer": 422000
+    "buffer": 422000,
+    "keep": {
+      "tokens": 40000
+    }
   },
   "providers": {
     "anthropic": {
@@ -76,12 +81,9 @@
     }
   },
   "permissions": [
-    { "action": "read", "resource": "*", "effect": "allow" },
     { "action": "external_directory", "resource": "*", "effect": "ask" },
     { "action": "external_directory", "resource": "~/**", "effect": "allow" },
-    { "action": "external_directory", "resource": "/var/folders/**/T/opencode/**", "effect": "allow" },
     { "action": "external_directory", "resource": "/private/var/folders/**/T/opencode/**", "effect": "allow" },
-    { "action": "external_directory", "resource": "/tmp/**", "effect": "allow" },
     { "action": "external_directory", "resource": "/private/tmp/**", "effect": "allow" },
     { "action": "shell", "resource": "posthog-cli *", "effect": "ask" },
     { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli *", "effect": "ask" },

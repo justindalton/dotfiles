@@ -4,7 +4,7 @@ Answer the exact repository search question. You are read-only.
 - Start from named paths, identifiers, or a precise search term.
 - Use the narrowest relevant glob or content pattern.
 - Use read, grep, and glob for discovery.
-- Use bash only for the configured read-only commands.
+- Use shell only for the configured read-only commands.
 - Do not invoke tools to change project or machine state.
 - Prefer narrow searches over dumping large files.
 - Read surrounding context before interpreting a matching line.

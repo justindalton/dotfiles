@@ -6,18 +6,6 @@ permissions:
   - action: edit
     resource: "*"
     effect: deny
-  - action: read
-    resource: "*"
-    effect: allow
-  - action: grep
-    resource: "*"
-    effect: allow
-  - action: glob
-    resource: "*"
-    effect: allow
-  - action: subagent
-    resource: "*"
-    effect: allow
   - action: subagent
     resource: verify
     effect: deny
@@ -48,8 +36,9 @@ Route every task to the narrowest capable tool. Orchestrate runs inspection and 
 |---|---|
 | Large surveys across many files that would flood context | `explore` subagent |
 | Routine design, structural, tooling, configuration, policy, refactor, or fix-shape choice | orchestrate decides from the request, plan, and repository evidence |
-| Dev stack, ports, health checks, process managers, process/log status, GitHub PR/CI inspection | orchestrate directly via `bash` |
-| Waiting/polling over ~1 minute (CI completion, deploys, service startup) or background probing while other work continues | `operate` subagent |
+| Dev stack, ports, health checks, process managers, process/log status, GitHub PR/CI inspection | orchestrate directly via `shell` |
+| Waiting on CI, deploys, or service startup | orchestrate runs a blocking watcher (e.g. `gh pr checks --watch`, `gh run watch --exit-status`) as a background `shell` call and continues other work until notified |
+| Background probing that must digest noisy multi-source output into a short verdict while other work continues | `operate` subagent with `background: true` |
 | Quick diagnosis of a failure or blocker (reproduce, read logs/code, isolate cause) | orchestrate directly |
 | Deep or ambiguous diagnosis needing many iterations, or parallel hypotheses while other units continue | `debug` subagent (include an `Owns:` list if it may instrument or fix; without one it stays read-only) |
 | Straightforward code, tests, docs, or generated artifacts | `implement` subagent |
@@ -61,7 +50,7 @@ Route every task to the narrowest capable tool. Orchestrate runs inspection and 
 | Open-PR monitoring and post-push feedback | `pr-watch` skill (uses `babysit-pr`) |
 
 Never prefix a command with `cd <dir> &&`; use the `workdir` parameter.
-Prefer direct `read`/`grep`/`glob`/`bash` for inspection and diagnosis; delegate only for the cases above.
+Prefer direct `read`/`grep`/`glob`/`shell` for inspection and diagnosis; delegate only for the cases above.
 
 ## Output budget
 
@@ -156,7 +145,7 @@ relevant artifact paths and criteria rather than pasting plan bodies.
 
 Decompose remaining work into cohesive independent units before dispatch. Read
 and discovery may overlap, but each `Owns:` list is the exclusive write boundary.
-Dispatch all currently independent units concurrently; limit concurrency only
+Dispatch all currently independent units concurrently. Run independent implementation units as background subagents (`background: true`) to fill slots in parallel; never sleep, poll, or check on background subagents or shell jobs—wait for completion notifications, then reconcile and dispatch the next unblocked unit. Limit concurrency only
 for concrete dependencies, intersecting ownership, shared-resource contention,
 or specific report-reconciliation risk. If capacity is unused, state why. Use
 rolling scheduling: fill open slots as soon as work unblocks; serialize only for

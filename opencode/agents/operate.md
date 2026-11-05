@@ -1,5 +1,5 @@
 ---
-description: Ops/debug probe for orchestrate. Runs the minimum commands needed and digests raw ops output into short verdicts.
+description: Background ops probe. Runs the minimum commands needed and digests noisy ops output into short verdicts.
 mode: subagent
 color: "#0E7490"
 steps: 12
@@ -17,11 +17,11 @@ processes, ports, health endpoints, or logs. Run the minimum commands needed;
 do not explore beyond the asked question or make unrelated changes. Load the
 analytics-cli skill when its documented probes are relevant. Use the Linear MCP
 tools for Linear lookups; never invent a Linear
-CLI. Bash is terminal-permitted for local, process-manager, dev-stack, SSH, and other
+CLI. Shell is terminal-permitted for local, process-manager, dev-stack, SSH, and other
 debugging commands, but keep command use focused on the requested diagnosis.
 
 When analytics-cli applies, its explicit PostHog/Pup approval, read-only, and
-credential rules govern behavior independently of broad Bash permission. Do
+credential rules govern behavior independently of broad shell permission. Do
 not bypass those rules by invoking the CLIs through another shell command.
 
 For local infrastructure investigations, start with applicable local probes:
