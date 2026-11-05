@@ -1,21 +1,22 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "orchestrate",
-  "subagent_depth": 2,
   "tool_output": {
     "max_lines": 200,
     "max_bytes": 16384
   },
+  "experimental": {
+    "subagent_depth": 2,
+    "todo": true
+  },
   "compaction": {
     "auto": true,
-    "tail_turns": 8,
-    "prune": true,
-    "reserved": 422000
+    "buffer": 422000
   },
-  "provider": {
+  "providers": {
     "anthropic": {
-      "options": {
-        "setCacheKey": true
+      "compatibility": {
+        "supportsPromptCacheKey": true
       },
       "models": {
         "claude-opus-5-5": {
@@ -26,125 +27,164 @@
           }
         }
       }
-    }
-  },
-  "experimental": {
-    "continue_loop_on_deny": true
-  },
-  "permission": {
-    "read": "allow",
-    "external_directory": {
-      "*": "ask",
-      "~/**": "allow",
-      "/var/folders/**/T/opencode/**": "allow",
-      "/private/var/folders/**/T/opencode/**": "allow",
-      "/tmp/**": "allow",
-      "/private/tmp/**": "allow"
     },
-    "bash": {
-      "posthog-cli *": "ask",
-      "/opt/homebrew/bin/posthog-cli *": "ask",
-      "posthog-cli --help": "allow",
-      "/opt/homebrew/bin/posthog-cli --help": "allow",
-      "posthog-cli --version": "allow",
-      "/opt/homebrew/bin/posthog-cli --version": "allow",
-      "posthog-cli help *": "allow",
-      "/opt/homebrew/bin/posthog-cli help *": "allow",
-      "posthog-cli api --help": "allow",
-      "/opt/homebrew/bin/posthog-cli api --help": "allow",
-      "posthog-cli api --agent-help": "allow",
-      "/opt/homebrew/bin/posthog-cli api --agent-help": "allow",
-      "posthog-cli api tools": "allow",
-      "/opt/homebrew/bin/posthog-cli api tools": "allow",
-      "posthog-cli api search *": "allow",
-      "/opt/homebrew/bin/posthog-cli api search *": "allow",
-      "posthog-cli api info *": "allow",
-      "/opt/homebrew/bin/posthog-cli api info *": "allow",
-      "posthog-cli api schema *": "allow",
-      "/opt/homebrew/bin/posthog-cli api schema *": "allow",
-      "posthog-cli api skill list*": "allow",
-      "/opt/homebrew/bin/posthog-cli api skill list*": "allow",
-      "posthog-cli exp endpoints list*": "allow",
-      "/opt/homebrew/bin/posthog-cli exp endpoints list*": "allow",
-      "posthog-cli exp endpoints get *": "allow",
-      "/opt/homebrew/bin/posthog-cli exp endpoints get *": "allow",
-      "posthog-cli exp endpoints diff *": "allow",
-      "/opt/homebrew/bin/posthog-cli exp endpoints diff *": "allow",
-      "posthog-cli exp task list*": "allow",
-      "/opt/homebrew/bin/posthog-cli exp task list*": "allow",
-      "posthog-cli exp task progress*": "allow",
-      "/opt/homebrew/bin/posthog-cli exp task progress*": "allow",
-      "posthog-cli exp schema status*": "allow",
-      "/opt/homebrew/bin/posthog-cli exp schema status*": "allow",
-      "posthog-cli exp query check *": "allow",
-      "/opt/homebrew/bin/posthog-cli exp query check *": "allow",
-      "git rebase*": "allow",
-      "gh *": "allow",
-      "pup *": "ask",
-      "/opt/homebrew/bin/pup *": "ask",
-      "pup --no-agent auth status*": "allow",
-      "/opt/homebrew/bin/pup --no-agent auth status*": "allow",
-      "pup --no-agent --read-only *": "allow",
-      "/opt/homebrew/bin/pup --no-agent --read-only *": "allow",
-      "*npm run typecheck*": "deny",
-      "*npm typecheck*": "deny",
-      "*npm run lint*": "deny",
-      "*npm lint*": "deny",
-      "*npm run format*": "deny",
-      "*npm format*": "deny",
-      "*pnpm run typecheck*": "deny",
-      "*pnpm typecheck*": "deny",
-      "*pnpm run lint*": "deny",
-      "*pnpm lint*": "deny",
-      "*pnpm run format*": "deny",
-      "*pnpm format*": "deny",
-      "*yarn run typecheck*": "deny",
-      "*yarn typecheck*": "deny",
-      "*yarn run lint*": "deny",
-      "*yarn lint*": "deny",
-      "*yarn run format*": "deny",
-      "*yarn format*": "deny",
-      "*bun run typecheck*": "deny",
-      "*bun typecheck*": "deny",
-      "*bun run lint*": "deny",
-      "*bun lint*": "deny",
-      "*bun run format*": "deny",
-      "*bun format*": "deny",
-      "tsc": "deny",
-      "./node_modules/.bin/tsc": "deny",
-      "npx tsc": "deny",
-      "bunx tsc": "deny",
-      "pnpm exec tsc": "deny",
-      "yarn exec tsc": "deny",
-      "npm exec tsc": "deny",
-      "*tsc --noEmit*": "deny",
-      "*tsc -b*": "deny",
-      "*tsc --build*": "deny",
-      "*tsc -p*": "deny",
-      "*turbo typecheck*": "deny",
-      "*turbo lint*": "deny",
-      "*turbo format*": "deny",
-      "*eslint .": "deny",
-      "*eslint . *": "deny",
-      "*prettier .": "deny",
-      "*prettier . *": "deny",
-      "*biome .": "deny",
-      "*biome . *": "deny",
-      "*oxfmt .": "deny",
-      "*oxfmt . *": "deny",
-      "*oxlint .": "deny",
-      "*oxlint . *": "deny"
+    "openai": {
+      "models": {
+        "gpt-6-luna": {
+          "variants": [
+            {
+              "id": "concise",
+              "settings": {
+                "textVerbosity": "low"
+              }
+            },
+            {
+              "id": "concise-low",
+              "settings": {
+                "reasoningEffort": "low",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
+        },
+        "gpt-6-astra": {
+          "variants": [
+            {
+              "id": "concise",
+              "settings": {
+                "textVerbosity": "low"
+              }
+            },
+            {
+              "id": "concise-high",
+              "settings": {
+                "reasoningEffort": "high",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
+        }
+      }
     }
   },
-  "tools": {
-    "linear_*": true
-  },
-  "agent": {
+  "permissions": [
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "~/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "/var/folders/**/T/opencode/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "/private/var/folders/**/T/opencode/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "/tmp/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "/private/tmp/**", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli *", "effect": "ask" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli *", "effect": "ask" },
+    { "action": "shell", "resource": "posthog-cli --help", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli --help", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli --version", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli --version", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli help *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli help *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api --help", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api --help", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api --agent-help", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api --agent-help", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api tools", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api tools", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api search *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api search *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api info *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api info *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api schema *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api schema *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli api skill list*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli api skill list*", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp endpoints list*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp endpoints list*", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp endpoints get *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp endpoints get *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp endpoints diff *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp endpoints diff *", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp task list*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp task list*", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp task progress*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp task progress*", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp schema status*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp schema status*", "effect": "allow" },
+    { "action": "shell", "resource": "posthog-cli exp query check *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/posthog-cli exp query check *", "effect": "allow" },
+    { "action": "shell", "resource": "git rebase*", "effect": "allow" },
+    { "action": "shell", "resource": "gh *", "effect": "allow" },
+    { "action": "shell", "resource": "pup *", "effect": "ask" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/pup *", "effect": "ask" },
+    { "action": "shell", "resource": "pup --no-agent auth status*", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/pup --no-agent auth status*", "effect": "allow" },
+    { "action": "shell", "resource": "pup --no-agent --read-only *", "effect": "allow" },
+    { "action": "shell", "resource": "/opt/homebrew/bin/pup --no-agent --read-only *", "effect": "allow" },
+    { "action": "shell", "resource": "*npm run typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*npm typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*npm run lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*npm lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*npm run format*", "effect": "deny" },
+    { "action": "shell", "resource": "*npm format*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm run typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm run lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm run format*", "effect": "deny" },
+    { "action": "shell", "resource": "*pnpm format*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn run typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn run lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn run format*", "effect": "deny" },
+    { "action": "shell", "resource": "*yarn format*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun run typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun run lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun run format*", "effect": "deny" },
+    { "action": "shell", "resource": "*bun format*", "effect": "deny" },
+    { "action": "shell", "resource": "tsc", "effect": "deny" },
+    { "action": "shell", "resource": "./node_modules/.bin/tsc", "effect": "deny" },
+    { "action": "shell", "resource": "npx tsc", "effect": "deny" },
+    { "action": "shell", "resource": "bunx tsc", "effect": "deny" },
+    { "action": "shell", "resource": "pnpm exec tsc", "effect": "deny" },
+    { "action": "shell", "resource": "yarn exec tsc", "effect": "deny" },
+    { "action": "shell", "resource": "npm exec tsc", "effect": "deny" },
+    { "action": "shell", "resource": "*tsc --noEmit*", "effect": "deny" },
+    { "action": "shell", "resource": "*tsc -b*", "effect": "deny" },
+    { "action": "shell", "resource": "*tsc --build*", "effect": "deny" },
+    { "action": "shell", "resource": "*tsc -p*", "effect": "deny" },
+    { "action": "shell", "resource": "*turbo typecheck*", "effect": "deny" },
+    { "action": "shell", "resource": "*turbo lint*", "effect": "deny" },
+    { "action": "shell", "resource": "*turbo format*", "effect": "deny" },
+    { "action": "shell", "resource": "*eslint .", "effect": "deny" },
+    { "action": "shell", "resource": "*eslint . *", "effect": "deny" },
+    { "action": "shell", "resource": "*prettier .", "effect": "deny" },
+    { "action": "shell", "resource": "*prettier . *", "effect": "deny" },
+    { "action": "shell", "resource": "*biome .", "effect": "deny" },
+    { "action": "shell", "resource": "*biome . *", "effect": "deny" },
+    { "action": "shell", "resource": "*oxfmt .", "effect": "deny" },
+    { "action": "shell", "resource": "*oxfmt . *", "effect": "deny" },
+    { "action": "shell", "resource": "*oxlint .", "effect": "deny" },
+    { "action": "shell", "resource": "*oxlint . *", "effect": "deny" },
+    { "action": "linear_*", "resource": "*", "effect": "allow" }
+  ],
+  "agents": {
+    "title": {
+      "model": "openai/gpt-6-luna#low",
+      "system": "You generate a short title for a coding-agent session. It is shown as a terminal/pane title so the user can tell at a glance what each session is working on.\n\nOutput ONLY the title: one line, no quotes, no trailing punctuation, no explanation.\n\nFormat: \"<Feature>: <activity>\"\n- Feature = the concrete thing being worked on: a component, system, file area, PR, bug, or product feature (e.g. \"Herdr titles\", \"Billing webhooks\", \"PR 1234\", \"Auth refresh\"). Never the tool, agent, workflow, or slash command being used.\n- Activity = a short verb phrase for how it is being worked on: plan, fix, debug, investigate, review, refactor, add, remove, tune, migrate, test, document, etc., plus a key object if it adds clarity.\n- Sentence case. Aim for 45 characters or fewer; hard max 50.\n\nThe input is often a slash-command or skill expansion full of workflow boilerplate (agent instructions, routing tables, system reminders, plan-mode text, policy rules). Ignore that boilerplate and find the user's actual request or arguments inside it. If a branch name, issue ID, PR number, or file path names the feature, prefer it.\n\nIf no specific feature can be identified, write a plain short description of the task instead (still under 50 characters). Never output generic titles like \"New session\", \"Help request\", or \"Coding task\".\n\nExamples:\nHerdr titles: tune title prompt\nAuth refresh: debug token expiry\nPR 1234: address review feedback\nCheckout page: add Apple Pay\nBilling webhooks: fix retry backoff\nSearch API: plan pagination redesign"
+    },
     "plan": {
-      "model": "anthropic/claude-opus-5-5",
-      "color": "#2563EB",
-      "reasoningEffort": "low",
-      "textVerbosity": "low"
+      "model": "anthropic/claude-opus-5-5#low",
+      "color": "#2563EB"
     },
     "build": {
       "model": "anthropic/claude-sonnet-5-5",
@@ -163,96 +203,88 @@
       "color": "#64748B"
     },
     "orchestrate": {
-      "model": "anthropic/claude-opus-5-5",
-      "options": {
-        "cacheControl": {
-          "type": "ephemeral",
-          "ttl": "1h"
-        }
-      }
+      "model": "anthropic/claude-opus-5-5#medium"
     },
     "architect": {
-      "model": "openai/gpt-6-astra"
+      "model": "openai/gpt-6-astra#concise"
     },
     "implement": {
-      "model": "openai/gpt-6-luna"
+      "model": "openai/gpt-6-luna#concise"
     },
     "implement-complex": {
-      "model": "anthropic/claude-opus-5-5"
+      "model": "anthropic/claude-opus-5-5#medium"
     },
     "debug": {
-      "model": "anthropic/claude-opus-5-5",
-      "options": {
-        "cacheControl": {
-          "type": "ephemeral",
-          "ttl": "1h"
-        }
-      }
+      "model": "anthropic/claude-opus-5-5"
     },
     "operate": {
-      "model": "openai/gpt-6-luna",
-      "reasoningEffort": "low"
+      "model": "openai/gpt-6-luna#concise-low"
     },
     "review": {
-      "model": "openai/gpt-6-astra",
-      "reasoningEffort": "high"
+      "model": "openai/gpt-6-astra#concise-high"
     },
     "verify": {
       "model": "openai/gpt-6-luna"
     }
   },
-  "small_model": "openai/gpt-5.4-nano",
   "mcp": {
-    "playwright": {
-      "type": "local",
-      "command": [
-        "sh",
-        "-c",
-        "exec \"$HOME/.config/opencode/bin/playwright-mcp-worktree\" \"$@\"",
-        "opencode-playwright"
-      ],
-      "enabled": true,
-      "timeout": 30000
-    },
-    "browsermcp": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@browsermcp/mcp@0.1.3"
-      ],
-      "enabled": false
-    },
-    "linear": {
-      "type": "remote",
-      "url": "https://mcp.linear.app/mcp",
-      "enabled": true
-    },
-    "figma": {
-      "type": "remote",
-      "url": "https://mcp.figma.com/mcp",
-      "enabled": false
-    },
-    "figwright": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@figwright/mcp@0.4.0"
-      ],
-      "enabled": false,
-      "timeout": 120000
-    },
-    "datadog": {
-      "type": "remote",
-      "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core%2Cprofiling",
-      "enabled": false
-    },
-    "posthog": {
-      "type": "remote",
-      "url": "https://mcp.posthog.com/mcp?readonly=true",
-      "enabled": false
+    "servers": {
+      "playwright": {
+        "type": "local",
+        "command": [
+          "sh",
+          "-c",
+          "exec \"$HOME/.config/opencode/bin/playwright-mcp-worktree\" \"$@\"",
+          "opencode-playwright"
+        ],
+        "disabled": false,
+        "timeout": {
+          "catalog": 30000,
+          "execution": 30000
+        }
+      },
+      "browsermcp": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@browsermcp/mcp@0.1.3"
+        ],
+        "disabled": true
+      },
+      "linear": {
+        "type": "remote",
+        "url": "https://mcp.linear.app/mcp",
+        "disabled": false
+      },
+      "figma": {
+        "type": "remote",
+        "url": "https://mcp.figma.com/mcp",
+        "disabled": true
+      },
+      "figwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@figwright/mcp@0.4.0"
+        ],
+        "disabled": true,
+        "timeout": {
+          "catalog": 120000,
+          "execution": 120000
+        }
+      },
+      "datadog": {
+        "type": "remote",
+        "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core%2Cprofiling",
+        "disabled": true
+      },
+      "posthog": {
+        "type": "remote",
+        "url": "https://mcp.posthog.com/mcp?readonly=true",
+        "disabled": true
+      }
     }
-  },
-  "plugin": ["@ramtinj95/opencode-tokenscope", "@datadog/opencode-plugin", "./plugins/mcp-toggle.js"]
+  }
 }

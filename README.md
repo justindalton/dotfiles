@@ -16,11 +16,12 @@ cd ~/code/dotfiles
 ./bin/install-opencode
 ```
 
-The installer creates `$HOME/.config/opencode` and links these tracked items
-individually: `opencode.json`, `opencode-tools.json`, `tui.jsonc`, `zen.json`,
-`herdr-tui-session.js`, `agent/`, `command/`, `plugins/`, and `bin/`. Existing
-generated runtime files such as `node_modules` and `figwright-plugin` are left
-alone.
+The installer creates `$HOME/.config/opencode` and links tracked OpenCode V2
+configuration individually, including `opencode.json`, `opencode-tools.json`,
+`zen.json`, `herdr-tui-session.js`, `agents/`, `commands/`, `plugins/`, `skills/`,
+`bin/`, and `offline/`. It does not install `tui.jsonc`: TUI integration is
+configured in the herdr-managed `cli.json`. Existing generated runtime files
+such as `node_modules` and `figwright-plugin` are left alone.
 
 The tracked default profile is lean: every configured MCP is disabled at
 startup. The runtime `mcp-toggle` plugin is the primary interactive mechanism;
@@ -32,8 +33,12 @@ use the `/mcp` command to inspect or change the current OpenCode instance:
 /mcp off figma       # disconnect figma without deleting its config
 ```
 
-Runtime toggles are not written to disk. For a batch or non-interactive
-full-tool session, launch opencode with the overlay that re-enables its MCPs:
+Runtime toggles are not written to disk. The built-in V2 `/mcps` dialog is also
+available. The `/mcp` command and its `mcp_list`, `mcp_enable`, and `mcp_disable`
+tools retain their names. The V1-only TokenScope command/plugin has been removed.
+For a batch or non-interactive full-tool session, launch OpenCode with the
+`opencode-tools.json` overlay; because V2 overlays replace whole MCP server
+entries, that overlay includes the complete server definitions:
 
 ```sh
 OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
@@ -47,7 +52,7 @@ Zen with identical model IDs. Authenticate once with `opencode auth login`
 (choose OpenCode Zen), or set `OPENCODE_API_KEY`. For convenience, add
 `alias ocz="$HOME/.config/opencode/bin/opencode-zen"` to your shell.
 
-Agent models live in `opencode.json` under `agent.<name>.model`, not in agent
+Agent models live in `opencode.json` under `agents.<name>.model`, not in agent
 frontmatter, so overlays can remap them. When changing an agent's model, update
 both `opencode.json` and `zen.json`.
 
@@ -57,9 +62,9 @@ is genuinely helpful for a design or tradeoff decision; routine consultation
 is optional, and orchestrate remains the decision-maker. The bundled
 `code-simplifier` skill provides behavior-preserving maintainability guidance,
 and the review agent uses it during every review. The bundled `pr-watch` skill
-handles pull-request publication and follow-through when applicable. Restart
-opencode after configuration or plugin changes so updated links and settings
-are loaded.
+handles pull-request publication and follow-through when applicable. OpenCode V2
+watches configuration files; if a plugin change does not take effect, restart
+the background service with `opencode service restart`.
 
 Implementation is split between `implement` (straightforward scoped work) and
 `implement-complex` (complex or escalated work), selected per brief by
@@ -92,6 +97,5 @@ Ask for publication in-session to override the repository's default mode.
 ## Validation and updates
 
 After changing configuration, validate JSON and shell syntax, inspect the diff,
-and run the installer in an isolated temporary `HOME`. Pull updates, rerun the
-installer, and restart opencode after configuration or plugin changes so the
-new links and settings are loaded.
+and run the installer in an isolated temporary `HOME`. Pull updates and rerun the
+installer to update the links.

@@ -2,37 +2,83 @@
 description: Reviews code for correctness, security, performance, and maintainability.
 mode: subagent
 color: "#BE185D"
-textVerbosity: low
-permission:
-  edit: deny
-  write: deny
-  patch: deny
-  task: deny
-  skill: allow
-  # Shared with verify and architect; keep these bash permissions in sync.
-  bash:
-    "*": deny
-    "gh *": allow
-    "git diff*": allow
-    "git status*": allow
-    "git show*": allow
-    "git log*": allow
-    "git rev-parse*": allow
-    "git merge-base*": allow
-    "git branch --show-current": allow
-    "git worktree list*": allow
-    "bunx turbo test --filter=*": allow
-    "vitest run *": allow
-    "vitest --run *": allow
-    "bunx vitest run *": allow
-    "bunx vitest --run *": allow
-    "npx vitest run *": allow
-    "pnpm exec vitest run *": allow
-    "yarn exec vitest run *": allow
-    "bun test *": allow
-    "npm test -- *": allow
-    "pnpm test -- *": allow
-    "yarn test *": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: skill
+    resource: "*"
+    effect: allow
+  # Shared with verify and architect; keep these shell permissions in sync.
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "gh *"
+    effect: allow
+  - action: shell
+    resource: "git diff*"
+    effect: allow
+  - action: shell
+    resource: "git status*"
+    effect: allow
+  - action: shell
+    resource: "git show*"
+    effect: allow
+  - action: shell
+    resource: "git log*"
+    effect: allow
+  - action: shell
+    resource: "git rev-parse*"
+    effect: allow
+  - action: shell
+    resource: "git merge-base*"
+    effect: allow
+  - action: shell
+    resource: "git branch --show-current"
+    effect: allow
+  - action: shell
+    resource: "git worktree list*"
+    effect: allow
+  - action: shell
+    resource: "bunx turbo test --filter=*"
+    effect: allow
+  - action: shell
+    resource: "vitest run *"
+    effect: allow
+  - action: shell
+    resource: "vitest --run *"
+    effect: allow
+  - action: shell
+    resource: "bunx vitest run *"
+    effect: allow
+  - action: shell
+    resource: "bunx vitest --run *"
+    effect: allow
+  - action: shell
+    resource: "npx vitest run *"
+    effect: allow
+  - action: shell
+    resource: "pnpm exec vitest run *"
+    effect: allow
+  - action: shell
+    resource: "yarn exec vitest run *"
+    effect: allow
+  - action: shell
+    resource: "bun test *"
+    effect: allow
+  - action: shell
+    resource: "npm test -- *"
+    effect: allow
+  - action: shell
+    resource: "pnpm test -- *"
+    effect: allow
+  - action: shell
+    resource: "yarn test *"
+    effect: allow
 ---
 
 You are a senior code reviewer. Review only; never modify files or implement fixes.

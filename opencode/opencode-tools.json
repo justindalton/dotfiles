@@ -1,20 +1,49 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "playwright": {
-      "enabled": true
-    },
-    "linear": {
-      "enabled": true
-    },
-    "figwright": {
-      "enabled": true
-    },
-    "datadog": {
-      "enabled": true
-    },
-    "posthog": {
-      "enabled": true
+    "servers": {
+      "playwright": {
+        "type": "local",
+        "command": [
+          "sh",
+          "-c",
+          "exec \"$HOME/.config/opencode/bin/playwright-mcp-worktree\" \"$@\"",
+          "opencode-playwright"
+        ],
+        "disabled": false,
+        "timeout": {
+          "catalog": 30000,
+          "execution": 30000
+        }
+      },
+      "linear": {
+        "type": "remote",
+        "url": "https://mcp.linear.app/mcp",
+        "disabled": false
+      },
+      "figwright": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "@figwright/mcp@0.4.0"
+        ],
+        "disabled": false,
+        "timeout": {
+          "catalog": 120000,
+          "execution": 120000
+        }
+      },
+      "datadog": {
+        "type": "remote",
+        "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=core%2Cprofiling",
+        "disabled": false
+      },
+      "posthog": {
+        "type": "remote",
+        "url": "https://mcp.posthog.com/mcp?readonly=true",
+        "disabled": false
+      }
     }
   }
 }

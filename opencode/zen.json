@@ -1,28 +1,81 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "enabled_providers": ["opencode"],
-  "provider": {
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "opencode", "effect": "allow" }
+  ],
+  "providers": {
     "opencode": {
-      "options": { "setCacheKey": true },
+      "compatibility": {
+        "supportsPromptCacheKey": true
+      },
       "models": {
-        "claude-opus-5-5": { "limit": { "context": 1000000, "input": 922000, "output": 128000 } }
+        "claude-opus-5-5": {
+          "limit": {
+            "context": 1000000,
+            "input": 922000,
+            "output": 128000
+          }
+        },
+        "gpt-6-luna": {
+          "variants": [
+            {
+              "id": "concise",
+              "settings": {
+                "textVerbosity": "low"
+              }
+            },
+            {
+              "id": "concise-low",
+              "settings": {
+                "reasoningEffort": "low",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
+        },
+        "gpt-6-astra": {
+          "variants": [
+            {
+              "id": "concise",
+              "settings": {
+                "textVerbosity": "low"
+              }
+            },
+            {
+              "id": "concise-high",
+              "settings": {
+                "reasoningEffort": "high",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
+        }
       }
     }
   },
-  "small_model": "opencode/gpt-5.4-nano",
-  "agent": {
-    "plan": { "model": "opencode/claude-opus-5-5" },
+  "agents": {
+    "title": { "model": "opencode/gpt-5.4-nano#low" },
+    "plan": { "model": "opencode/claude-opus-5-5#low" },
     "build": { "model": "opencode/claude-sonnet-5-5" },
     "general": { "model": "opencode/gpt-6-luna" },
     "explore": { "model": "opencode/gpt-6-luna" },
     "compaction": { "model": "opencode/gpt-6-luna" },
-    "orchestrate": { "model": "opencode/claude-opus-5-5" },
-    "implement": { "model": "opencode/gpt-6-luna" },
-    "implement-complex": { "model": "opencode/claude-opus-5-5" },
+    "orchestrate": { "model": "opencode/claude-opus-5-5#medium" },
+    "implement": { "model": "opencode/gpt-6-luna#concise" },
+    "implement-complex": { "model": "opencode/claude-opus-5-5#medium" },
     "debug": { "model": "opencode/claude-opus-5-5" },
-    "architect": { "model": "opencode/gpt-6-astra" },
-    "review": { "model": "opencode/gpt-6-astra", "reasoningEffort": "high" },
-    "operate": { "model": "opencode/gpt-6-luna", "reasoningEffort": "low" },
+    "architect": { "model": "opencode/gpt-6-astra#concise" },
+    "review": { "model": "opencode/gpt-6-astra#concise-high" },
+    "operate": { "model": "opencode/gpt-6-luna#concise-low" },
     "verify": { "model": "opencode/gpt-6-luna" }
   }
 }

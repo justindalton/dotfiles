@@ -1,15 +1,19 @@
 ---
 description: "Implements assigned tasks needing deeper reasoning: subtle correctness, concurrency, cross-module refactors, ambiguous failure diagnosis, or repeated implement failures."
 mode: subagent
-reasoningEffort: medium
 color: "#B45309"
 # No steps cap: opencode sends the max-steps notice as assistant prefill, which
 # claude-opus-5-5 rejects. Restore once fixed upstream.
-permission:
-  task:
-    "*": deny
-    explore: allow
-    operate: allow
+permissions:
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: explore
+    effect: allow
+  - action: subagent
+    resource: operate
+    effect: allow
 # Keep the prompt body identical to implement.md.
 ---
 

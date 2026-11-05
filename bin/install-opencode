@@ -17,10 +17,9 @@ items=(
   offline.json
   zen.json
   opencode-tools.json
-  tui.jsonc
   herdr-tui-session.js
-  agent
-  command
+  agents
+  commands
   plugins
   skills
   bin

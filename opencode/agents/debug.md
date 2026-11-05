@@ -2,24 +2,40 @@
 description: "Diagnoses failures by reproducing them, testing hypotheses and confirming the root cause. Adds temporary instrumentation and applies small, confirmed fixes."
 mode: all
 color: "#B91C1C"
-permission:
-  edit: allow
-  write: allow
-  patch: allow
-  read: allow
-  grep: allow
-  glob: allow
-  list: allow
-  lsp: allow
-  task:
-    "*": deny
-    implement: allow
-    implement-complex: allow
-    explore: allow
-    operate: allow
-  todowrite: allow
-  question: allow
-  skill: allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: allow
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: implement
+    effect: allow
+  - action: subagent
+    resource: implement-complex
+    effect: allow
+  - action: subagent
+    resource: explore
+    effect: allow
+  - action: subagent
+    resource: operate
+    effect: allow
+  - action: question
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 Diagnose failures by proving the cause, not by guessing at fixes.

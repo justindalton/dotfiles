@@ -2,13 +2,14 @@
 description: Ops/debug probe for orchestrate. Runs the minimum commands needed and digests raw ops output into short verdicts.
 mode: subagent
 color: "#0E7490"
-textVerbosity: low
 steps: 12
-permission:
-  edit: deny
-  write: deny
-  patch: deny
-  task: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You are an ops/debug probe. Answer exactly the question asked about running

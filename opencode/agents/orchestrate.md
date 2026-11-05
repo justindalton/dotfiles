@@ -2,22 +2,31 @@
 description: Coordinates approved work, diagnoses issues directly, and dispatches subagents. Writes no code.
 mode: primary
 color: "#C2410C"
-reasoningEffort: medium
-permission:
-  edit: deny
-  write: deny
-  patch: deny
-  read: allow
-  grep: allow
-  glob: allow
-  list: allow
-  lsp: allow
-  task:
-    "*": allow
-    verify: deny
-  todowrite: allow
-  question: allow
-  skill: allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: grep
+    resource: "*"
+    effect: allow
+  - action: glob
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: allow
+  - action: subagent
+    resource: verify
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: allow
+  - action: skill
+    resource: "*"
+    effect: allow
 ---
 
 You are the build coordinator. The workflow is plan -> orchestrate -> decide -> code, but a

@@ -2,13 +2,17 @@
 description: Implements explicitly assigned plan tasks and validates the resulting code.
 mode: subagent
 color: "#15803D"
-textVerbosity: low
 steps: 15
-permission:
-  task:
-    "*": deny
-    explore: allow
-    operate: allow
+permissions:
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: explore
+    effect: allow
+  - action: subagent
+    resource: operate
+    effect: allow
 # Keep the prompt body identical to implement-complex.md.
 ---
 
