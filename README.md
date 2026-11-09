@@ -44,6 +44,18 @@ entries, that overlay includes the complete server definitions:
 OPENCODE_CONFIG="$HOME/.config/opencode/opencode-tools.json" opencode
 ```
 
+## Terminal configuration
+
+Herdr, Ghostty, and Rex configuration is tracked in `herdr/`, `ghostty/`, and
+`rex/`. Install the three individual config links with:
+
+```sh
+./bin/install-terminal
+```
+
+The installer is idempotent and refuses to replace existing files, directories,
+or conflicting symlinks. Move conflicts aside first, then run it again.
+
 ## OpenCode Zen profile
 
 The default profile uses direct Anthropic and OpenAI providers. Run

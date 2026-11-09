@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(CDPATH= cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+repo_root="$(CDPATH= cd -- "$script_dir/.." && pwd -P)"
+
+items=(
+  "herdr/config.toml"
+  "ghostty/config.ghostty"
+  "rex/init.lua"
+)
+
+for item in "${items[@]}"; do
+  parent="$HOME/.config/$(dirname "$item")"
+
+  # Check each config parent component before mkdir so mkdir -p cannot follow
+  # a symlink or encounter a non-directory in the target path.
+  config_root="$HOME/.config"
+  for directory in "$config_root" "$parent"; do
+    if [[ -L "$directory" || ( -e "$directory" && ! -d "$directory" ) ]]; then
+      printf 'installer error: refusing to use conflicting parent: %s\n' "$directory" >&2
+      exit 1
+    fi
+  done
+  mkdir -p "$parent"
+done
+
+for item in "${items[@]}"; do
+  source="$repo_root/$item"
+  target="$HOME/.config/$item"
+
+  if [[ ! -e "$source" && ! -L "$source" ]]; then
+    printf 'installer error: missing source: %s\n' "$source" >&2
+    exit 1
+  fi
+
+  if [[ -L "$target" ]]; then
+    current_target="$(readlink "$target")"
+    if [[ "$current_target" == "$source" ]]; then
+      continue
+    fi
+    printf 'installer error: refusing to replace conflicting symlink: %s\n' "$target" >&2
+    exit 1
+  fi
+
+  if [[ -e "$target" ]]; then
+    printf 'installer error: refusing to replace existing path: %s\n' "$target" >&2
+    exit 1
+  fi
+done
+
+for item in "${items[@]}"; do
+  source="$repo_root/$item"
+  target="$HOME/.config/$item"
+  if [[ -e "$target" || -L "$target" ]]; then
+    continue
+  fi
+  ln -s "$source" "$target"
+done
+
+printf 'Linked terminal configuration into %s/.config\n' "$HOME"
