@@ -38,6 +38,9 @@ permissions:
     resource: "git merge-base*"
     effect: allow
   - action: shell
+    resource: "git fetch*"
+    effect: allow
+  - action: shell
     resource: "git branch --show-current"
     effect: allow
   - action: shell
