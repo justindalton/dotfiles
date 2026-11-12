@@ -8,5 +8,6 @@ if [[ ! -f "$config" ]]; then
 fi
 
 # OPENCODE_CONFIG holds one overlay, so this replaces opencode-tools.json for this session.
+# Use a private server because the shared background service won't see OPENCODE_CONFIG.
 export OPENCODE_CONFIG="$config"
-exec opencode "$@"
+exec opencode --standalone "$@"

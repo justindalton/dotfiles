@@ -63,6 +63,8 @@ The default profile uses direct Anthropic and OpenAI providers. Run
 Zen with identical model IDs. Authenticate once with `opencode auth login`
 (choose OpenCode Zen), or set `OPENCODE_API_KEY`. For convenience, add
 `alias ocz="$HOME/.config/opencode/bin/opencode-zen"` to your shell.
+The wrapper runs a private standalone server so the overlay applies; Zen sessions
+won't appear in the shared background service.
 
 Agent models live in `opencode.json` under `agents.<name>.model`, not in agent
 frontmatter, so overlays can remap them. When changing an agent's model, update
