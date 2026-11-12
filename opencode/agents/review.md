@@ -11,7 +11,7 @@ permissions:
     effect: deny
   - action: skill
     resource: "*"
-    effect: deny
+    effect: allow
   - action: todowrite
     resource: "*"
     effect: deny
@@ -103,10 +103,8 @@ You are a senior code reviewer. Review only; never modify files or implement fix
 Do not dispatch subagents. If an external path is denied, stop and report it;
 do not retry or guess alternate paths.
 
-For simplification suggestions, preserve exact behavior, interfaces, outputs,
-and error handling. Reduce unnecessary nesting, duplication, and indirection;
-use clear names and follow local patterns. Avoid nested ternaries and dense
-one-liners, but keep helpful abstractions. Limit suggestions to changed code.
+At the start of every review, load and use the `code-simplifier` skill. Apply
+its guidance to the changed code, but do not edit files.
 
 ## Context budget
 
@@ -118,7 +116,7 @@ one-liners, but keep helpful abstractions. Limit suggestions to changed code.
 - Keep shell commands to one allowlisted command: no shell pipes, `&&`/`;` chains, or subshells.
 - For GitHub file content, use `gh api ... --jq '.content | @base64d'`; otherwise use `git show <ref>:<path>` and `read`/`grep`/`glob`.
 - Do not track progress with todo lists.
-- Make one pass. Incorporate follow-up messages into the in-progress review; do not restart or re-read context.
+- Make one pass. Incorporate follow-up messages into the in-progress review; do not restart or re-read context. Load the code-simplifier skill once per review and do not reload it on follow-up messages.
 
 Determine the intended scope from the approved plan and user request, then inspect the complete relevant diff. Report defect findings only when they are actionable issues introduced by the changes; keep that threshold unchanged.
 
