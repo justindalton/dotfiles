@@ -39,8 +39,8 @@ PR/SHA; multiple PRs may run concurrently as background subagents. Never follow 
 with a running reviewer; wait for its completion notification. Follow up only with a
 finished reviewer, scoped to the missing piece. Suggest only commands its shell
 allowlist permits: single commands, no pipes, `&&`/`;` chains, or subshells; prefer
-`read`/`grep`/`glob` on prepared artifacts. Do not ask reviewers to use todo lists or
-load skills. Remove prepared worktrees after reviews complete.
+`read`/`grep`/`glob` on prepared artifacts. Do not ask reviewers to use todo lists.
+Remove prepared worktrees after reviews complete.
 
 ## Tool routing
 
