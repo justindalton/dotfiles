@@ -29,6 +29,15 @@ permissions:
     resource: "git show*"
     effect: allow
   - action: shell
+    resource: "git ls-tree*"
+    effect: allow
+  - action: shell
+    resource: "git cat-file*"
+    effect: allow
+  - action: shell
+    resource: "git grep*"
+    effect: allow
+  - action: shell
     resource: "git log*"
     effect: allow
   - action: shell

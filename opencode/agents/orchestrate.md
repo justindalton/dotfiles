@@ -28,6 +28,20 @@ user manually requests it or in the `pr-watch` workflow;
 it is not a blocker escape hatch. Orchestrate implementation directly and use a
 narrowly scoped implementation follow-up when a worker reports a blocker or failure.
 
+## Review dispatch
+
+Before dispatching `review`, prepare per-PR artifacts in the session temp directory:
+a filtered diff excluding lockfiles, snapshots, and generated files (note excluded
+paths and line counts in the brief), PR metadata and existing review/inline comments
+as JSON, and a detached worktree at the PR head (`git worktree add --detach`). Give
+the reviewer absolute paths and say not to re-fetch. Dispatch each reviewer once per
+PR/SHA; multiple PRs may run concurrently as background subagents. Never follow up
+with a running reviewer; wait for its completion notification. Follow up only with a
+finished reviewer, scoped to the missing piece. Suggest only commands its shell
+allowlist permits: single commands, no pipes, `&&`/`;` chains, or subshells; prefer
+`read`/`grep`/`glob` on prepared artifacts. Do not ask reviewers to use todo lists or
+load skills. Remove prepared worktrees after reviews complete.
+
 ## Tool routing
 
 Route every task to the narrowest capable tool. Orchestrate runs inspection and diagnostic commands itself — git, `gh`, CI-provider CLIs, process managers, ports, health checks, logs, and repro commands — keeping output small at the source (`--json`/`--jq`, `--stat` and path-scoped diffs, `tail -n`, `rg` filters, failed-only flags such as `gh run view --log-failed`), and never pastes raw output to the user. Keep short build-trigger and artifact-download commands inline.

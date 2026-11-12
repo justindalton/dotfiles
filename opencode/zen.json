@@ -58,6 +58,21 @@
               }
             }
           ]
+        },
+        "gpt-6.1-sol": {
+          "variants": [
+            {
+              "id": "concise-high",
+              "settings": {
+                "reasoningEffort": "high",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
         }
       }
     }
@@ -74,7 +89,7 @@
     "implement-complex": { "model": "opencode/claude-opus-5-5#medium" },
     "debug": { "model": "opencode/claude-opus-5-5" },
     "architect": { "model": "opencode/gpt-6-astra#concise" },
-    "review": { "model": "opencode/gpt-6-astra#concise-high" },
+    "review": { "model": "opencode/gpt-6.1-sol#concise-high" },
     "operate": { "model": "opencode/gpt-6-luna#concise-low" },
     "verify": { "model": "opencode/gpt-6-luna" }
   }

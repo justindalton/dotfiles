@@ -16,6 +16,8 @@ reuse the branch PR. Use draft mode when creating the PR if repository
 instructions ask for it. Run `pr-prep`; inspect source edits via `implement`, run
 warranted targeted validation, commit, and push changes. Review the complete PR
 diff only after it is ready. Triage every review-agent, bot, and reviewer finding.
+Review dispatch follows orchestrate's `Review dispatch` rules: use prepared artifacts,
+dispatch once per SHA, and never follow up with a running reviewer.
 Delegate actionable fixes to `implement`, validate as warranted, commit/push, and
 re-review affected areas when warranted. Give every dismissed finding an explicit
 disposition. Human-authored comment replies require user approval, though code

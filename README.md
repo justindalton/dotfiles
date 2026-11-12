@@ -72,9 +72,10 @@ The review and architect agents remain available for review and architecture
 decisions. The read-only architect may be consulted when an independent opinion
 is genuinely helpful for a design or tradeoff decision; routine consultation
 is optional, and orchestrate remains the decision-maker. The bundled
-`code-simplifier` skill provides behavior-preserving maintainability guidance,
-and the review agent uses it during every review. The bundled `pr-watch` skill
-handles pull-request publication and follow-through when applicable. OpenCode V2
+`code-simplifier` skill remains available for other use, while the review agent
+applies inline code-simplifier guidance for its simplification suggestions. The
+bundled `pr-watch` skill handles pull-request publication and follow-through
+when applicable. OpenCode V2
 watches configuration files; if a plugin change does not take effect, restart
 the background service with `opencode service restart`.
 

@@ -76,6 +76,21 @@
               }
             }
           ]
+        },
+        "gpt-6.1-sol": {
+          "variants": [
+            {
+              "id": "concise-high",
+              "settings": {
+                "reasoningEffort": "high",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
         }
       }
     }
@@ -223,7 +238,7 @@
       "model": "openai/gpt-6-luna#concise-low"
     },
     "review": {
-      "model": "openai/gpt-6-astra#concise-high"
+      "model": "openai/gpt-6.1-sol#concise-high"
     },
     "verify": {
       "model": "openai/gpt-6-luna"

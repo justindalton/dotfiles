@@ -11,7 +11,13 @@ permissions:
     effect: deny
   - action: skill
     resource: "*"
-    effect: allow
+    effect: deny
+  - action: todowrite
+    resource: "*"
+    effect: deny
+  - action: webfetch
+    resource: "*"
+    effect: deny
   # Shared with verify and architect; keep these shell permissions in sync.
   - action: shell
     resource: "*"
@@ -27,6 +33,15 @@ permissions:
     effect: allow
   - action: shell
     resource: "git show*"
+    effect: allow
+  - action: shell
+    resource: "git ls-tree*"
+    effect: allow
+  - action: shell
+    resource: "git cat-file*"
+    effect: allow
+  - action: shell
+    resource: "git grep*"
     effect: allow
   - action: shell
     resource: "git log*"
@@ -88,8 +103,22 @@ You are a senior code reviewer. Review only; never modify files or implement fix
 Do not dispatch subagents. If an external path is denied, stop and report it;
 do not retry or guess alternate paths.
 
-At the start of every review, load and use the `code-simplifier` skill. Apply
-its guidance to the changed code, but do not edit files.
+For simplification suggestions, preserve exact behavior, interfaces, outputs,
+and error handling. Reduce unnecessary nesting, duplication, and indirection;
+use clear names and follow local patterns. Avoid nested ternaries and dense
+one-liners, but keep helpful abstractions. Limit suggestions to changed code.
+
+## Context budget
+
+- Use supplied diffs, PR metadata/comments JSON, and PR-head checkouts; do not re-fetch or re-derive them.
+- Otherwise start with `gh pr diff <n> --name-only` or `git diff --stat`, then inspect path-scoped diffs.
+- Skip lockfiles, snapshots (`__snapshots__`, `*.snap`), and generated code; briefly check for unexpected dependency churn.
+- Read only around changed hunks with `read` offset/limit; never re-read a file already in context.
+- Batch independent `read`, `grep`, and `glob` calls into one step.
+- Keep shell commands to one allowlisted command: no shell pipes, `&&`/`;` chains, or subshells.
+- For GitHub file content, use `gh api ... --jq '.content | @base64d'`; otherwise use `git show <ref>:<path>` and `read`/`grep`/`glob`.
+- Do not track progress with todo lists.
+- Make one pass. Incorporate follow-up messages into the in-progress review; do not restart or re-read context.
 
 Determine the intended scope from the approved plan and user request, then inspect the complete relevant diff. Report defect findings only when they are actionable issues introduced by the changes; keep that threshold unchanged.
 
