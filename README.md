@@ -60,8 +60,9 @@ or conflicting symlinks. Move conflicts aside first, then run it again.
 
 The default profile uses direct Anthropic and OpenAI providers. Run
 `~/.config/opencode/bin/opencode-zen` to use the same agents through OpenCode
-Zen with identical model IDs. Authenticate once with `opencode auth login`
-(choose OpenCode Zen), or set `OPENCODE_API_KEY`. For convenience, add
+Console (formerly Zen) with identical model IDs. Authenticate once with
+`opencode auth login` (choose OpenCode Console, formerly Zen), or set
+`OPENCODE_API_KEY`. For convenience, add
 `alias ocz="$HOME/.config/opencode/bin/opencode-zen"` to your shell.
 The wrapper runs a private standalone server so the overlay applies; Zen sessions
 won't appear in the shared background service.
