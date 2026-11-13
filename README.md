@@ -18,8 +18,8 @@ cd ~/code/dotfiles
 
 The installer creates `$HOME/.config/opencode` and links tracked OpenCode V2
 configuration individually, including `opencode.json`, `opencode-tools.json`,
-`zen.json`, `herdr-tui-session.js`, `agents/`, `commands/`, `plugins/`, `skills/`,
-`bin/`, and `offline/`. It does not install `tui.jsonc`: TUI integration is
+`zen.json`, `go.json`, `herdr-tui-session.js`, `agents/`, `commands/`, `plugins/`,
+`skills/`, `bin/`, and `offline/`. It does not install `tui.jsonc`: TUI integration is
 configured in the herdr-managed `cli.json`. Existing generated runtime files
 such as `node_modules` and `figwright-plugin` are left alone.
 
@@ -67,9 +67,16 @@ Console (formerly Zen) with identical model IDs. Authenticate once with
 The wrapper runs a private standalone server so the overlay applies; Zen sessions
 won't appear in the shared background service.
 
+The Go profile uses Opus through Zen for plan and orchestrate at API prices, and
+OpenCode Go subscription models for the other agents. Connect OpenCode Go with
+`/connect` and provide Zen credentials. Add
+`alias ocg="$HOME/.config/opencode/bin/opencode-go"` to your shell. DeepSeek
+requires allowing the Global region in workspace privacy settings; otherwise,
+swap general and explore to `opencode-go/minimax-m3`.
+
 Agent models live in `opencode.json` under `agents.<name>.model`, not in agent
 frontmatter, so overlays can remap them. When changing an agent's model, update
-both `opencode.json` and `zen.json`.
+`opencode.json`, `zen.json`, and `go.json`.
 
 The review and architect agents remain available for review and architecture
 decisions. The read-only architect may be consulted when an independent opinion

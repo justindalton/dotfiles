@@ -1,0 +1,68 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "opencode", "effect": "allow" },
+    { "action": "provider.use", "resource": "opencode-go", "effect": "allow" }
+  ],
+  "providers": {
+    "opencode": {
+      "compatibility": {
+        "supportsPromptCacheKey": true
+      },
+      "models": {
+        "claude-opus-5-5": {
+          "limit": {
+            "context": 1000000,
+            "input": 922000,
+            "output": 128000
+          }
+        }
+      }
+    },
+    "opencode-go": {
+      "compatibility": {
+        "supportsPromptCacheKey": true
+      },
+      "models": {
+        "gpt-6-luna": {
+          "variants": [
+            {
+              "id": "concise",
+              "settings": {
+                "textVerbosity": "low"
+              }
+            },
+            {
+              "id": "concise-low",
+              "settings": {
+                "reasoningEffort": "low",
+                "reasoningSummary": "auto",
+                "include": [
+                  "reasoning.encrypted_content"
+                ],
+                "textVerbosity": "low"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "agents": {
+    "title": { "model": "opencode-go/mimo-v2.6-flash" },
+    "plan": { "model": "opencode/claude-opus-5-5#low" },
+    "build": { "model": "opencode-go/glm-5.2" },
+    "general": { "model": "opencode-go/deepseek-v4.1-flash" },
+    "explore": { "model": "opencode-go/deepseek-v4.1-flash" },
+    "compaction": { "model": "opencode-go/minimax-m3" },
+    "orchestrate": { "model": "opencode/claude-opus-5-5#medium" },
+    "implement": { "model": "opencode-go/gpt-6-luna#concise" },
+    "implement-complex": { "model": "opencode-go/kimi-k3.1-pro" },
+    "debug": { "model": "opencode-go/glm-5.3" },
+    "architect": { "model": "opencode-go/gemini-4-argon#medium" },
+    "review": { "model": "opencode-go/grok-4.7" },
+    "operate": { "model": "opencode-go/gpt-6-luna#concise-low" },
+    "verify": { "model": "opencode-go/hy4" }
+  }
+}

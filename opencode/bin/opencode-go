@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config="${OPENCODE_GO_CONFIG:-$HOME/.config/opencode/go.json}"
+if [[ ! -f "$config" ]]; then
+  printf 'opencode-go: missing config: %s\nRun bin/install-opencode to link the Go profile.\n' "$config" >&2
+  exit 1
+fi
+
+# OPENCODE_CONFIG holds one overlay, so this replaces opencode-tools.json for this session.
+# Use a private server because the shared background service won't see OPENCODE_CONFIG.
+export OPENCODE_CONFIG="$config"
+exec opencode --standalone "$@"

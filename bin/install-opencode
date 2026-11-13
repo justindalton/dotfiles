@@ -16,6 +16,7 @@ items=(
   opencode.json
   offline.json
   zen.json
+  go.json
   opencode-tools.json
   herdr-tui-session.js
   agents
