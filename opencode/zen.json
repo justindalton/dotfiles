@@ -79,7 +79,7 @@
   },
   "agents": {
     "title": { "model": "opencode/gpt-5.4-nano#low" },
-    "plan": { "model": "opencode/claude-opus-5-5#low" },
+    "plan": { "model": "opencode/claude-opus-5-5#medium" },
     "build": { "model": "opencode/claude-sonnet-5-5" },
     "general": { "model": "opencode/gpt-6-luna" },
     "explore": { "model": "opencode/gpt-6-luna" },
