@@ -19,6 +19,7 @@ items=(
   go.json
   opencode-tools.json
   herdr-tui-session.js
+  session-keeper
   agents
   commands
   plugins

@@ -18,10 +18,18 @@ cd ~/code/dotfiles
 
 The installer creates `$HOME/.config/opencode` and links tracked OpenCode V2
 configuration individually, including `opencode.json`, `opencode-tools.json`,
-`zen.json`, `go.json`, `herdr-tui-session.js`, `agents/`, `commands/`, `plugins/`,
-`skills/`, `bin/`, and `offline/`. It does not install `tui.jsonc`: TUI integration is
+`zen.json`, `go.json`, `herdr-tui-session.js`, `session-keeper/`, `agents/`, `commands/`,
+`plugins/`, `skills/`, `bin/`, and `offline/`. It does not install `tui.jsonc`: TUI integration is
 configured in the herdr-managed `cli.json`. Existing generated runtime files
 such as `node_modules` and `figwright-plugin` are left alone.
+
+`session-keeper/` is a TUI plugin that works around
+[anomalyco/opencode#60839](https://github.com/anomalyco/opencode/issues/60839):
+after a macOS sleep/wake, a TUI can drop from its session to the home screen.
+The plugin reopens the session, and on macOS it holds `caffeinate -is` while
+each TUI runs (set `OPENCODE_CAFFEINATE=0` to skip). Enable it by adding
+`"./session-keeper"` to `plugins` in `~/.config/opencode/cli.json`. Remove it
+once the upstream fix ships.
 
 The tracked default profile is lean: every configured MCP is disabled at
 startup. The runtime `mcp-toggle` plugin is the primary interactive mechanism;
