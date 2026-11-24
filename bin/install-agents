@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(CDPATH= cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+repo_root="$(CDPATH= cd -- "$script_dir/.." && pwd -P)"
+source="$repo_root/agents"
+destination="$HOME/.agents"
+
+if [[ ! -d "$source" ]]; then
+  printf 'installer error: missing source: %s\n' "$source" >&2
+  exit 1
+fi
+
+if [[ -L "$destination" ]]; then
+  current_target="$(readlink "$destination")"
+  if [[ "$current_target" != "$source" ]]; then
+    printf 'installer error: refusing to replace conflicting symlink: %s\n' "$destination" >&2
+    exit 1
+  fi
+elif [[ -e "$destination" ]]; then
+  printf 'installer error: refusing to replace existing path: %s\n' "$destination" >&2
+  exit 1
+else
+  ln -s "$source" "$destination"
+fi
+
+printf 'Linked agent skills into %s\n' "$destination"

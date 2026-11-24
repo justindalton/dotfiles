@@ -1,0 +1,52 @@
+{
+  "version": 3,
+  "skills": {
+    "babysit-pr": {
+      "source": "openai/codex",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/openai/codex.git",
+      "skillPath": ".codex/skills/babysit-pr/SKILL.md",
+      "skillFolderHash": "b27da8e91ca53decf614587b3d70a9990f26c054",
+      "installedAt": "2026-06-01T19:30:49.132Z",
+      "updatedAt": "2026-06-01T19:30:49.132Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "3013fdeb8a11b10b1eb795ec3ae8bfca38f7c26d",
+      "installedAt": "2026-06-01T19:30:52.654Z",
+      "updatedAt": "2026-06-01T19:30:52.654Z"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "skillFolderHash": "343db72180d05814949fef7d46be96b5c6ee86b3",
+      "installedAt": "2026-06-11T19:20:32.239Z",
+      "updatedAt": "2026-06-11T19:20:32.239Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "antigravity-cli",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-code-cli",
+    "opencode",
+    "warp",
+    "zed",
+    "claude-code",
+    "zencoder"
+  ]
+}

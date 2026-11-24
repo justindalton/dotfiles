@@ -20,6 +20,14 @@ opencode/figwright-plugin/
 opencode/.cache/
 opencode/.state/
 
+# Agent runtime and local state
+agents/.claude/
+agents/.cache/
+agents/.state/
+agents/**/__pycache__/
+agents/**/.pytest_cache/
+*.pyc
+
 # Environment files, credentials, and authentication state
 .env
 .env.*

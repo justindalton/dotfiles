@@ -64,6 +64,18 @@ Herdr, Ghostty, and Rex configuration is tracked in `herdr/`, `ghostty/`, and
 The installer is idempotent and refuses to replace existing files, directories,
 or conflicting symlinks. Move conflicts aside first, then run it again.
 
+## Agent skills
+
+`agents/` holds cross-agent skills, read by OpenCode, Codex, Claude, and other
+tools from `~/.agents/skills`. Third-party skills are tracked with their
+provenance in `agents/.skill-lock.json`. Install the directory link with:
+
+```sh
+./bin/install-agents
+```
+
+Move an existing `~/.agents` aside before installing.
+
 ## OpenCode Zen profile
 
 The default profile uses direct Anthropic and OpenAI providers. Run
