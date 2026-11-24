@@ -30,6 +30,9 @@ batch ends while open, re-invoke `babysit-pr` in the same session. Triage every
 subsequent review-agent, bot, and reviewer finding with explicit dispositions for
 dismissals; fix actionable comments through the implement/validate/commit/push
 loop, then continue watching. Never auto-merge or use a detached watcher.
+When `babysit-pr` reports `ready_to_merge`, send one distinct notification with
+the PR URL/number, head SHA, green CI, mergeable state, and no pending review
+items, then immediately re-invoke `babysit-pr` to continue watching.
 
 Skip or stop only on explicit publication opt-out, interruption, a concrete
 safety/user-help blocker (for example, unrelated dirty changes that cannot be
